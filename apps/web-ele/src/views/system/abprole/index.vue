@@ -1,21 +1,24 @@
 <script setup lang="ts">
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
+
 import { h, ref } from 'vue';
+
 import { Page, useVbenDrawer, useVbenModal } from '@vben/common-ui';
+
 import {
   ElButton as Button,
-  ElTree as Tree,
   ElDropdown,
-  ElDropdownMenu,
   ElDropdownItem,
+  ElDropdownMenu,
   ElMessage,
   ElMessageBox,
+  ElRadio,
+  ElRadioGroup,
   ElSpace,
   ElTag,
   ElText,
-  ElRadioGroup,
-  ElRadio,
+  ElTree as Tree,
 } from 'element-plus';
 
 import { useVbenForm } from '#/adapter/form';
@@ -130,9 +133,11 @@ async function submit() {
     const { data = {} } = await api({ body: fetchParams });
     if (data.id) {
       ElMessage({
-      type: 'success',
-        message: editRow.value.id ? $t('common.editSuccess') : $t('common.addSuccess'),
-      })
+        type: 'success',
+        message: editRow.value.id
+          ? $t('common.editSuccess')
+          : $t('common.addSuccess'),
+      });
       addModalApi.close();
       gridApi.reload();
     }
@@ -148,19 +153,16 @@ function onEdit(record: any) {
 }
 
 function onDel(row: any) {
-  ElMessageBox.confirm(
-    `${$t('common.confirmDelete')}${row.name} ?`,
-    {
-      type: 'warning',
-    }
-  ).then(async () => {
+  ElMessageBox.confirm(`${$t('common.confirmDelete')}${row.name} ?`, {
+    type: 'warning',
+  }).then(async () => {
     await postRolesDelete({ body: { id: row.id } });
-      gridApi.reload();
-      ElMessage({
+    gridApi.reload();
+    ElMessage({
       type: 'success',
       message: $t('common.deleteSuccess'),
-    })
-  })
+    });
+  });
 }
 
 const authTree = ref([] as any);
@@ -177,11 +179,11 @@ const onAuth = async (row: any) => {
     });
     authTree.value = data?.permissions || [];
     authPolicy.value = data?.allGrants || [];
-    
+
     // 只设置实际的权限节点，父节点会自动根据子节点状态设置
     const grants = data.grants || [];
-    defaultCheckedKeys.value = grants.filter((item: string) => 
-      item.includes('.')  // 只包含实际权限节点
+    defaultCheckedKeys.value = grants.filter(
+      (item: string) => item.includes('.'), // 只包含实际权限节点
     );
   } finally {
     authDrawerApi.setState({ loading: false });
@@ -199,8 +201,8 @@ const [AuthDrawer, authDrawerApi] = useVbenDrawer({
 
 // 自定义级联选中
 const handleCheck = (
-  node: any,
-  checkedStatus: { checkedKeys: string[]; checkedNodes: any[] }
+  e: any,
+  checkedStatus: { checkedKeys: string[]; checkedNodes: any[] },
 ) => {
   defaultCheckedKeys.value = checkedStatus.checkedKeys;
 };
@@ -209,11 +211,12 @@ const updateAuth = async () => {
   try {
     authDrawerApi.setState({ loading: true, confirmLoading: true });
     const permissions = [] as any;
-    
+
     // 处理选中的权限
     const checkedKeys = authTreeRef.value?.getCheckedKeys() || [];
     checkedKeys.forEach((item: string) => {
-      if (item.includes('.')) {  // 只处理实际权限节点
+      if (item.includes('.')) {
+        // 只处理实际权限节点
         permissions.push({
           name: item,
           isGranted: true,
@@ -292,11 +295,19 @@ const updateAuth = async () => {
             <Button size="small">......</Button>
             <template #dropdown>
               <ElDropdownMenu>
-                <ElDropdownItem v-access:code="'AbpIdentity.Roles.ManagePermissions'" @click="onAuth(row)">
-                    <ElText type="primary">{{ $t('abp.role.permissions') }}</ElText>
+                <ElDropdownItem
+                  v-access:code="'AbpIdentity.Roles.ManagePermissions'"
+                  @click="onAuth(row)"
+                >
+                  <ElText type="primary">
+                    {{ $t('abp.role.permissions') }}
+                  </ElText>
                 </ElDropdownItem>
-                <ElDropdownItem v-access:code="'AbpIdentity.Roles.Delete'" @click="onDel(row)">
-                    <ElText type="danger">{{ $t('common.delete') }}</ElText>
+                <ElDropdownItem
+                  v-access:code="'AbpIdentity.Roles.Delete'"
+                  @click="onDel(row)"
+                >
+                  <ElText type="danger">{{ $t('common.delete') }}</ElText>
                 </ElDropdownItem>
               </ElDropdownMenu>
             </template>
@@ -312,21 +323,26 @@ const updateAuth = async () => {
       <AddRoleForm>
         <template #isDefault="slotProps">
           <ElRadioGroup v-bind="slotProps">
-            <ElRadio v-for="item in slotProps.options" :key="item.label" :value="item.value">{{ item.label }}</ElRadio>
+            <ElRadio
+              v-for="item in slotProps.options"
+              :key="item.label"
+              :value="item.value"
+            >
+              {{ item.label }}
+            </ElRadio>
           </ElRadioGroup>
         </template>
-      </AddRoleForm> 
+      </AddRoleForm>
     </AddModal>
     <AuthDrawer :title="$t('abp.role.permissions')" class="w-[500px]">
       <Tree
         ref="authTreeRef"
+        :check-strictly="true"
+        :data="authTree"
+        :default-checked-keys="defaultCheckedKeys"
+        :props="{ label: 'title', children: 'children' }"
         node-key="key"
         show-checkbox
-        :data="authTree"
-        :props="{ label: 'title', children: 'children' }"
-        :default-checked-keys="defaultCheckedKeys"
-        :check-strictly="false" 
-        @check="handleCheck"
       />
     </AuthDrawer>
   </Page>

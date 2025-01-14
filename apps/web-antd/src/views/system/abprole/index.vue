@@ -2,7 +2,7 @@
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
 
-import { h, ref, onMounted } from 'vue';
+import { h, ref } from 'vue';
 
 import { Page, useVbenDrawer, useVbenModal } from '@vben/common-ui';
 
@@ -31,7 +31,6 @@ import {
 import { $t } from '#/locales';
 
 import { addRoleFormSchema, querySchema, tableSchema } from './schema';
-import { useLoading } from '#/components/Loading';
 // const [openFullLoading, closeFullLoading] = useLoading({
 //   tip: '加载中...'
 // });
@@ -189,11 +188,11 @@ const onAuth = async (row: any) => {
     });
     authTree.value = data?.permissions || [];
     authPolicy.value = data?.allGrants || [];
-    
+
     // 只设置实际的权限节点，父节点会自动根据子节点状态设置
     const grants = data.grants || [];
-    defaultCheckedKeys.value = grants.filter((item: string) => 
-      item.includes('.')  // 只包含实际权限节点
+    defaultCheckedKeys.value = grants.filter(
+      (item: string) => item.includes('.'), // 只包含实际权限节点
     );
   } finally {
     authDrawerApi.setState({ loading: false });
@@ -210,19 +209,33 @@ const [AuthDrawer, authDrawerApi] = useVbenDrawer({
 });
 
 // 自定义级联选中
-const handleCheck = (checkedKeys) => {
-  defaultCheckedKeys.value = checkedKeys;
+const handleCheck = (checkedKeys, e) => {
+  if (e.checked === true) {
+    // 新增权限时，向下级联选中
+    const filteredKeys = authPolicy.value.filter((key) =>
+      key.startsWith(e.node.key),
+    );
+    checkedKeys.checked = defaultCheckedKeys.value.checked.concat(
+      filteredKeys.filter((key) => !checkedKeys.checked.includes(key)),
+    );
+  } else {
+    // 取消权限时，向下级联反选
+    checkedKeys.checked = checkedKeys.checked.filter(
+      (key) => !key.startsWith(e.node.key),
+    );
+  }
 };
 
 const updateAuth = async () => {
   try {
     authDrawerApi.setState({ loading: true, confirmLoading: true });
     const permissions = [] as any;
-    
+
     // 处理选中的权限
     const checkedKeys = defaultCheckedKeys.value;
-    checkedKeys.forEach((item: string) => {
-      if (item.includes('.')) {  // 只处理实际权限节点
+    checkedKeys.checked.forEach((item: string) => {
+      if (item.includes('.')) {
+        // 只处理实际权限节点
         permissions.push({
           name: item,
           isGranted: true,
@@ -232,7 +245,7 @@ const updateAuth = async () => {
 
     // 处理未选中的权限
     authPolicy.value.forEach((item: string) => {
-      if (!checkedKeys.includes(item) && item.includes('.')) {
+      if (!checkedKeys.checked.includes(item) && item.includes('.')) {
         permissions.push({
           name: item,
           isGranted: false,
@@ -342,7 +355,7 @@ const updateAuth = async () => {
     <AuthDrawer :title="$t('abp.role.permissions')" class="w-[500px]">
       <Tree
         v-model:checked-keys="defaultCheckedKeys"
-        :check-strictly="false"
+        :check-strictly="true"
         :tree-data="authTree"
         checkable
         @check="handleCheck"
