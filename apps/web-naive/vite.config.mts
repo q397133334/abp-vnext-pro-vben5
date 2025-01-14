@@ -10,6 +10,13 @@ export default defineConfig(async (config) => {
     vite: {
       server: {
         proxy: {
+          '/api/connect/token': {
+            changeOrigin: true,
+            rewrite: (path) => path.replace(/^\/api/, ''),
+            // mock代理目标地址
+            target: env.VITE_APP_API_ADDRESS,
+            ws: true,
+          },
           '/proxy': {
             changeOrigin: true,
             rewrite: (path) => path.replace(/^\/proxy/, ''),

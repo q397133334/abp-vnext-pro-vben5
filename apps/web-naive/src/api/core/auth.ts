@@ -5,11 +5,17 @@ export namespace AuthApi {
   export interface LoginParams {
     password?: string;
     username?: string;
+    client_id?: string;
+    grant_type?: string;
+    scope?: string;
   }
 
   /** 登录接口返回值 */
   export interface LoginResult {
-    accessToken: string;
+    access_token: string;
+    token_type: string;
+    expires_in: number;
+    refresh_token: string;
   }
 
   export interface RefreshTokenResult {
@@ -22,7 +28,15 @@ export namespace AuthApi {
  * 登录
  */
 export async function loginApi(data: AuthApi.LoginParams) {
-  return requestClient.post<AuthApi.LoginResult>('/auth/login', data);
+  data.grant_type = 'password';
+  data.scope = 'offline_access';
+  data.client_id = 'AbpSolution1_App';
+  console.log('data', data);
+  return requestClient.post<AuthApi.LoginResult>('/connect/token', data, {
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+  });
 }
 
 /**

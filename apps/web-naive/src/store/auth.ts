@@ -10,11 +10,11 @@ import { defineStore } from 'pinia';
 
 import { message, notification } from '#/adapter/naive';
 import { getUserInfoApi, logoutApi } from '#/api';
+import { loginApi } from '#/api/core/auth';
 import {
   type ApplicationAuthConfigurationDto,
   type ApplicationConfigurationDto,
   getApiAbpApplicationConfiguration,
-  postApiAppAccountLogin,
   postTenantsFind,
 } from '#/api-client';
 import { $t } from '#/locales';
@@ -55,14 +55,12 @@ export const useAuthStore = defineStore('auth', () => {
       }
 
       loginLoading.value = true;
-      const { data = {} } = await postApiAppAccountLogin({
-        body: {
-          ...params,
-        },
+      const data = await loginApi({
+        ...params,
       });
       // 如果成功获取到 accessToken
-      if (data.token) {
-        accessStore.setAccessToken(data.token);
+      if (data.access_token) {
+        accessStore.setAccessToken(data.access_token);
         userInfo = data as any;
         userStore.setUserInfo(userInfo as any);
         const { data: authData } = await getApiAbpApplicationConfiguration({
@@ -83,10 +81,10 @@ export const useAuthStore = defineStore('auth', () => {
             : await router.push(DEFAULT_HOME_PATH);
         }
 
-        if (userInfo?.userName) {
+        if (userInfo?.username) {
           notification.success({
             content: $t('authentication.loginSuccess'),
-            description: `${$t('authentication.loginSuccessDesc')}:${userInfo?.userName}`,
+            description: `${$t('authentication.loginSuccessDesc')}:${userInfo?.username}`,
             duration: 3000,
           });
         }
