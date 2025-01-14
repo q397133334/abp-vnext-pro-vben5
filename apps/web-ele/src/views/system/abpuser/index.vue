@@ -30,7 +30,6 @@ import {
   postUsersDelete,
   postUsersLock,
   postUsersPage,
-  postUsersResetTwoFactor,
   postUsersRole,
   postUsersUpdate,
 } from '#/api-client';
@@ -234,18 +233,6 @@ const exportData = async () => {
     gridApi.setLoading(false);
   }
 };
-function resetTwoFactor(row: any) {
-  ElMessageBox.confirm(`${$t('common.confirmDelete')}${row.userName} ?`, {
-    type: 'warning',
-  }).then(async () => {
-    await postUsersResetTwoFactor({ body: { userId: row.id } });
-    gridApi.reload();
-    ElMessage({
-      type: 'success',
-      message: $t('abp.user.resetTwoFactor') + $t('common.success'),
-    });
-  });
-}
 </script>
 
 <template>
@@ -281,19 +268,6 @@ function resetTwoFactor(row: any) {
           "
         />
       </template>
-      <template #twoFactorEnabled="{ row }">
-        <component
-          :is="
-            h(
-              ElTag,
-              { color: row.twoFactorEnabled ? 'green' : 'red' },
-              row.twoFactorEnabled
-                ? $t('common.enabled')
-                : $t('common.disabled'),
-            )
-          "
-        />
-      </template>
       <template #action="{ row }">
         <ElSpace>
           <Button
@@ -325,14 +299,6 @@ function resetTwoFactor(row: any) {
                   @click="onDel(row)"
                 >
                   <ElText type="danger">{{ $t('common.delete') }}</ElText>
-                </ElDropdownItem>
-                <ElDropdownItem
-                  v-access:code="'AbpIdentity.Users.ResetTwoFactor'"
-                  @click="resetTwoFactor(row)"
-                >
-                  <ElText type="primary">
-                    {{ $t('abp.user.resetTwoFactor') }}
-                  </ElText>
                 </ElDropdownItem>
               </ElDropdownMenu>
             </template>
