@@ -172,9 +172,10 @@ const onAuth = async (row: any) => {
 
     // 只设置实际的权限节点，父节点会自动根据子节点状态设置
     const grants = data.grants || [];
-    defaultCheckedKeys.value = grants.filter(
-      (item: string) => item.includes('.'), // 只包含实际权限节点
-    );
+    defaultCheckedKeys.value = grants;
+    // defaultCheckedKeys.value = grants.filter(
+    //   (item: string) => item.includes('.'), // 只包含实际权限节点
+    // );
   } finally {
     authDrawerApi.setState({ loading: false });
   }
@@ -189,21 +190,32 @@ const [AuthDrawer, authDrawerApi] = useVbenDrawer({
   },
 });
 
-// 自定义级联选中
-const handleCheck = (
-  e: any,
-  checkedStatus: { checkedKeys: string[]; checkedNodes: any[] },
-) => {
-  defaultCheckedKeys.value = checkedStatus.checkedKeys;
-};
+const onChange = (node: any, { checkedKeys = []}) => {
+  defaultCheckedKeys.value = checkedKeys;
+}
+
+const handleCheckChange = (node: any, isChecked: boolean) => {
+  console.log(node, isChecked);
+  if (isChecked && node.children && node.children.length > 0) {
+    // 父节点选中，子节点全部选中
+    const childKeys = node.children.map((item: any) => item.key);
+    defaultCheckedKeys.value = [...defaultCheckedKeys.value, ...childKeys];
+  } else {
+    // 父节点取消选中，子节点全部取消选中
+    const childKeys = node.children.map((item: any) => item.key);
+    childKeys.map((key: string) => {
+      authTreeRef.value && authTreeRef.value.setChecked(key, isChecked, true);
+    });
+  }
+}
 
 const updateAuth = async () => {
   try {
     authDrawerApi.setState({ loading: true, confirmLoading: true });
     const permissions = [] as any;
 
-    // 处理选中的权限
-    const checkedKeys = authTreeRef.value?.getCheckedKeys() || [];
+    // 处理选中的权限 getCheckedKeys
+    const checkedKeys = authTreeRef.value && authTreeRef.value.getCheckedKeys() || [] as any;
     checkedKeys.forEach((item: string) => {
       if (item.includes('.')) {
         // 只处理实际权限节点
@@ -329,12 +341,14 @@ const updateAuth = async () => {
     <AuthDrawer :title="$t('abp.role.permissions')" class="w-[500px]">
       <Tree
         ref="authTreeRef"
+        node-key="key"
+        show-checkbox
         :check-strictly="true"
         :data="authTree"
         :default-checked-keys="defaultCheckedKeys"
         :props="{ label: 'title', children: 'children' }"
-        node-key="key"
-        show-checkbox
+        @check="onChange"
+        @check-change="handleCheckChange"
       />
     </AuthDrawer>
   </Page>

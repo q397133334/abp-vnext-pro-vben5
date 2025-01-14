@@ -159,9 +159,10 @@ const onAuth = async (row: any) => {
 
     // 只设置实际的权限节点，父节点会自动根据子节点状态设置
     const grants = data.grants || [];
-    defaultCheckedKeys.value = grants.filter(
-      (item: string) => item.includes('.'), // 只包含实际权限节点
-    );
+    // defaultCheckedKeys.value = grants.filter(
+    //   (item: string) => item.includes('.'), // 只包含实际权限节点
+    // );
+    defaultCheckedKeys.value = grants;
   } finally {
     authDrawerApi.setState({ loading: false });
   }
@@ -177,15 +178,19 @@ const [AuthDrawer, authDrawerApi] = useVbenDrawer({
 });
 
 // 自定义级联选中
-const handleCheck = (checkedKeys, e) => {
+const handleCheck = (checkedKeys: { checked: any[]; }, e: { checked: boolean; node: {[x: string]: any }; }) => {
   if (e.checked === true) {
     // 新增权限时，向下级联选中
-    const filteredKeys = authPolicy.value.filter((key) =>
+    const filteredKeys = authPolicy.value.filter((key: string) =>
       key.startsWith(e.node.key),
     );
     checkedKeys.checked = defaultCheckedKeys.value.checked.concat(
-      filteredKeys.filter((key) => !checkedKeys.checked.includes(key)),
+      filteredKeys.filter((key: string) => !checkedKeys.checked.includes(key)),
     );
+    if (e.node?.parent?.key && !checkedKeys.checked.includes(e.node.parent.key)) {
+      checkedKeys.checked.push(e.node.parent.key)
+    }
+
   } else {
     // 取消权限时，向下级联反选
     checkedKeys.checked = checkedKeys.checked.filter(
@@ -193,14 +198,14 @@ const handleCheck = (checkedKeys, e) => {
     );
   }
 };
-
+/*  */
 const updateAuth = async () => {
   try {
     authDrawerApi.setState({ loading: true, confirmLoading: true });
     const permissions = [] as any;
-
     // 处理选中的权限
     const checkedKeys = defaultCheckedKeys.value;
+    console.log('checkedKeys----传参', checkedKeys);
     checkedKeys.checked.forEach((item: string) => {
       if (item.includes('.')) {
         // 只处理实际权限节点
