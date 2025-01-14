@@ -4,16 +4,14 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { NButton as Button, NSpace as Space } from 'naive-ui';
-
-import { dialog as Dialog } from '#/adapter/naive';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   postTextTemplatesDelete,
   postTextTemplatesPage,
 } from '#/api-client/index';
+import fileRequest from '#/api-client-config/index-blob';
+import { TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
-
 // 新增modal
 import AddModal from './AddModal.vue';
 // 编辑modal
@@ -90,21 +88,13 @@ const handleEdit = (row: Record<string, any>) => {
   editModalApi.open();
 };
 
-const handleDelete = (row: any) => {
-  Dialog.warning({
-    positiveText: $t('common.confirm'),
-    negativeText: $t('common.cancel'),
-    closable: false,
-    title: `${$t('common.confirmDelete')}?`,
-    onPositiveClick: async () => {
-      await postTextTemplatesDelete({
-        body: {
-          id: row.id,
-        },
-      });
-      gridApi.reload();
+const handleDelete = async (row: any) => {
+  await postTextTemplatesDelete({
+    body: {
+      id: row.id,
     },
   });
+  gridApi.reload();
 };
 const exportData = async () => {
   gridApi.setLoading(true);
@@ -137,44 +127,47 @@ const exportData = async () => {
   <Page auto-content-height>
     <Grid>
       <template #toolbar-actions>
-        <Space>
-          <Space>
-            <Button
-              type="primary"
-              v-access:code="'AbpTemplateManagement.Template.Create'"
-              @click="handleAdd"
-            >
-              {{ $t('common.add') }}
-            </Button>
-            <Button
-              type="primary"
-              v-access:code="'AbpTemplateManagement.Template.Export'"
-              @click="exportData"
-            >
-              {{ $t('common.export') }}
-            </Button>
-          </Space>
-        </Space>
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.add'),
+              type: 'primary',
+              icon: 'ant-design:plus-outlined',
+              onClick: handleAdd.bind(null),
+              auth: ['AbpTemplateManagement.Template.Create'],
+            },
+            {
+              label: $t('common.export'),
+              type: 'primary',
+              icon: 'ant-design:download-outlined',
+              onClick: exportData.bind(null),
+              auth: ['AbpTemplateManagement.Template.Export'],
+            },
+          ]"
+        />
       </template>
       <template #action="{ row }">
-        <Button
-          size="small"
-          style="margin-right: 10px"
-          type="primary"
-          v-access:code="'AbpTemplateManagement.Template.Update'"
-          @click="handleEdit(row)"
-        >
-          {{ $t('common.edit') }}
-        </Button>
-
-        <Button
-          size="small"
-          type="error"
-          v-access:code="'AbpTemplateManagement.Template.Delete'"
-          @click="handleDelete(row)"
-        >
-          {{ $t('common.delete') }}
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              auth: ['AbpTemplateManagement.Template.Update'],
+              onClick: handleEdit.bind(null, row),
+              text: true,
+              size: 'small',
+            },
+            {
+              label: $t('common.delete'),
+              auth: ['AbpTemplateManagement.Template.Delete'],
+              text: true,
+              size: 'small',
+              popConfirm: {
+                title: $t('common.askConfirmDelete'),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
     <AddVbenModal @reload="gridApi.reload" />

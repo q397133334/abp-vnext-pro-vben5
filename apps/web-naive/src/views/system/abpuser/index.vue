@@ -7,10 +7,8 @@ import { ref } from 'vue';
 import { Page, useVbenModal } from '@vben/common-ui';
 
 import {
-  NButton as Button,
   NCheckbox as Checkbox,
   NCheckboxGroup as CheckboxGroup,
-  NSpace as Space,
   NTabPane as TabPane,
   NTabs as Tabs,
   NTag as Tag,
@@ -30,6 +28,7 @@ import {
   postUsersUpdate,
 } from '#/api-client';
 import fileRequest from '#/api-client-config/index-blob';
+import { TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 
 import {
@@ -185,21 +184,9 @@ async function resetTwoFactor(row: any) {
   Message.success($t('abp.user.resetTwoFactor') + $t('common.success'));
 }
 const onLock = async (row: Record<string, any>) => {
-  let message = $t('common.confirmDisable');
-  if (!row.isActive) {
-    message = $t('common.confirmEnable');
-  }
-  Modal.warning({
-    positiveText: $t('common.confirm'),
-    negativeText: $t('common.cancel'),
-    closable: false,
-    title: `${message}${row.userName} ?`,
-    onPositiveClick: async () => {
-      await postUsersLock({ body: { userId: row.id, locked: !row.isActive } });
-      gridApi.reload();
-      Message.success($t('common.editSuccess'));
-    },
-  });
+  await postUsersLock({ body: { userId: row.id, locked: !row.isActive } });
+  gridApi.reload();
+  Message.success($t('common.editSuccess'));
 };
 
 const rolesList = ref([] as any);
@@ -250,22 +237,24 @@ const exportData = async () => {
   <Page auto-content-height>
     <Grid>
       <template #toolbar-actions>
-        <Space>
-          <Button
-            type="primary"
-            v-access:code="'AbpIdentity.Users.Create'"
-            @click="openAddModal"
-          >
-            {{ $t('common.add') }}
-          </Button>
-          <Button
-            type="primary"
-            v-access:code="'AbpIdentity.Users.Export'"
-            @click="exportData"
-          >
-            {{ $t('common.export') }}
-          </Button>
-        </Space>
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.add'),
+              type: 'primary',
+              icon: 'ant-design:plus-outlined',
+              onClick: openAddModal.bind(null),
+              auth: ['AbpIdentity.Users.Create'],
+            },
+            {
+              label: $t('common.export'),
+              type: 'primary',
+              icon: 'ant-design:download-outlined',
+              onClick: exportData.bind(null),
+              auth: ['AbpIdentity.Users.Export'],
+            },
+          ]"
+        />
       </template>
 
       <template #isActive="{ row }">
@@ -281,41 +270,43 @@ const exportData = async () => {
         <Tag v-else type="error"> {{ $t('common.disabled') }} </Tag>
       </template>
       <template #action="{ row }">
-        <Space>
-          <Button
-            size="small"
-            type="primary"
-            v-access:code="'AbpIdentity.Users.Update'"
-            @click="onEdit(row)"
-          >
-            {{ $t('common.edit') }}
-          </Button>
-
-          <Button
-            size="small"
-            type="primary"
-            v-access:code="'AbpIdentity.Users.Enable'"
-            @click="onLock(row)"
-          >
-            {{ row.isActive ? $t('common.disabled') : $t('common.enabled') }}
-          </Button>
-          <Button
-            size="small"
-            type="error"
-            v-access:code="'AbpIdentity.Users.Delete'"
-            @click="onDel(row)"
-          >
-            {{ $t('common.delete') }}
-          </Button>
-          <Button
-            size="small"
-            type="error"
-            v-access:code="'AbpIdentity.Users.ResetTwoFactor'"
-            @click="resetTwoFactor(row)"
-          >
-            {{ $t('abp.user.resetTwoFactor') }}
-          </Button>
-        </Space>
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'primary',
+              text: true,
+              size: 'small',
+              auth: ['AbpIdentity.Users.Update'],
+              onClick: onEdit.bind(null, row),
+            },
+          ]"
+          :drop-down-actions="[
+            {
+              label: row.isActive
+                ? $t('common.disabled')
+                : $t('common.enabled'),
+              icon: 'ant-design:lock-outlined',
+              auth: ['AbpIdentity.Users.Enable'],
+              onClick: onLock.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              icon: 'ant-design:delete-outlined',
+              auth: ['AbpIdentity.Users.Delete'],
+              popConfirm: {
+                title: $t('common.askConfirmDelete'),
+                confirm: onDel.bind(null, row),
+              },
+            },
+            {
+              label: $t('abp.user.resetTwoFactor'),
+              icon: 'ant-design:usergroup-add-outlined',
+              auth: ['AbpIdentity.Users.ResetTwoFactor'],
+              onClick: resetTwoFactor.bind(null, row),
+            },
+          ]"
+        />
       </template>
     </Grid>
 

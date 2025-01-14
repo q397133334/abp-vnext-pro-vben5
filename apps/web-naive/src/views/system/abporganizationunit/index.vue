@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, reactive, ref, watch } from 'vue';
+import type { DropdownOption, TreeOption } from 'naive-ui';
+
+import { onMounted, ref } from 'vue';
 
 import { Page, useVbenModal, type VbenFormProps } from '@vben/common-ui';
-import type { DropdownOption, TreeOption, } from 'naive-ui'
+
 import {
   NButton as Button,
+  NDropdown as Dropdown,
   NInput as Input,
   NTabPane as TabPane,
   NTabs as Tabs,
   NTree as Tree,
-  NDropdown as Dropdown,
 } from 'naive-ui';
 
 import { useVbenForm } from '#/adapter/form';
@@ -28,9 +30,9 @@ import {
   postOrganizationUnitsRemoveUserFromOrganizationUnit,
   postOrganizationUnitsTree,
   type PostOrganizationUnitsTreeResponse,
-  type TreeOutput,
 } from '#/api-client/index';
 import { $t } from '#/locales';
+
 import OrgTreeAddModalComponent from './OrgTreeAddModal.vue';
 import OrgTreeEditModalComponent from './OrgTreeEditModal.vue';
 
@@ -73,19 +75,19 @@ const getParentKey = (
   return parentKey;
 };
 
-const dropdownOptions =  [
+const dropdownOptions = [
   {
     label: '展开全部',
     key: 'open',
   },
   {
     label: '折叠全部',
-    key: 'close'
+    key: 'close',
   },
 ];
-const handleTreeDropdownSelect = (key: string | number) => {
+const handleTreeDropdownSelect = (key: number | string) => {
   isExpandAll.value = key === 'open';
-}
+};
 
 async function getTreeData() {
   const { data = [] } = await postOrganizationUnitsTree();
@@ -445,8 +447,8 @@ function removeUser(row: Record<string, any>) {
   });
 }
 
-const xRef = ref(0)
-const yRef = ref(0)
+const xRef = ref(0);
+const yRef = ref(0);
 const showDropdownRef = ref(false);
 const optionsRef = ref<DropdownOption[]>([
   { label: $t('common.add'), key: 'add' },
@@ -455,13 +457,13 @@ const optionsRef = ref<DropdownOption[]>([
 ]);
 
 const handleSelect = (key: string) => {
-  showDropdownRef.value = false
-  onContextMenuSelect(key)
-}
+  showDropdownRef.value = false;
+  onContextMenuSelect(key);
+};
 
 const handleClickoutside = () => {
-  showDropdownRef.value = false
-}
+  showDropdownRef.value = false;
+};
 
 const nodeProps = ({ option }: { option: TreeOption }) => {
   return {
@@ -473,13 +475,13 @@ const nodeProps = ({ option }: { option: TreeOption }) => {
     onContextmenu(e: MouseEvent): void {
       currentSelectedKey.value = String(option.key || '');
       parentDisplayName.value = String(option.title || '');
-      showDropdownRef.value = true
-      xRef.value = e.clientX
-      yRef.value = e.clientY
-      e.preventDefault()
-    }
-  }
-}
+      showDropdownRef.value = true;
+      xRef.value = e.clientX;
+      yRef.value = e.clientY;
+      e.preventDefault();
+    },
+  };
+};
 
 const onContextMenuSelect = async (key: string) => {
   switch (key) {
@@ -506,7 +508,7 @@ const onContextMenuSelect = async (key: string) => {
           currentSelectedKey.value = '';
           getTreeData();
         },
-      })
+      });
       break;
     }
     case 'edit': {
@@ -519,7 +521,6 @@ const onContextMenuSelect = async (key: string) => {
     }
   }
 };
-
 </script>
 
 <template>
@@ -539,20 +540,24 @@ const onContextMenuSelect = async (key: string) => {
             {{ $t('abp.organizationunit.add') }}
           </Button>
           <Input v-model:value="searchValue" class="ml-1 flex-1" />
-          <Dropdown class="ml-1" :options="dropdownOptions" @select="handleTreeDropdownSelect">
+          <Dropdown
+            :options="dropdownOptions"
+            class="ml-1"
+            @select="handleTreeDropdownSelect"
+          >
             <Button class="font-bold">......</Button>
           </Dropdown>
         </div>
         <Tree
-          class="mt-3"
-          label-field="title"
-          :cancelable="false"
           :block-node="true"
+          :cancelable="false"
           :data="gData"
           :default-expand-all="isExpandAll"
+          :node-props="nodeProps"
           :pattern="searchValue"
           :show-irrelevant-nodes="false"
-          :node-props="nodeProps"
+          class="mt-3"
+          label-field="title"
         >
           <template #title="{ title }">
             <span v-if="title.indexOf(searchValue) > -1">
@@ -563,17 +568,16 @@ const onContextMenuSelect = async (key: string) => {
               }}
             </span>
             <span v-else>{{ title }}</span>
-
           </template>
         </Tree>
         <Dropdown
-          placement="bottom-start"
-          :show="showDropdownRef"
           :options="optionsRef"
+          :show="showDropdownRef"
           :x="xRef"
           :y="yRef"
-          @select="handleSelect"
+          placement="bottom-start"
           @clickoutside="handleClickoutside"
+          @select="handleSelect"
         />
       </div>
 
@@ -592,7 +596,7 @@ const onContextMenuSelect = async (key: string) => {
                   </Button>
                 </template>
                 <template #action="{ row }">
-                  <Button type="error" @click="removeUser(row)">
+                  <Button size="small" type="error" @click="removeUser(row)">
                     {{ $t('common.delete') }}
                   </Button>
                 </template>

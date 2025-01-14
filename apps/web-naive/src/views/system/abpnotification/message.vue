@@ -6,7 +6,7 @@ import { ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { NButton as Button, NSpace as Space, NTag as Tag } from 'naive-ui';
+import { NTag as Tag } from 'naive-ui';
 
 import { useVbenForm } from '#/adapter/form';
 import { dialog, message as Message } from '#/adapter/naive';
@@ -22,6 +22,7 @@ import {
   postNotificationSendCommonWarningMessage,
   postUsersFindByUserName,
 } from '#/api-client';
+import { TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 
 import {
@@ -219,14 +220,15 @@ const onRead = (row: any) => {
   <Page auto-content-height>
     <Grid>
       <template #toolbar-actions>
-        <Space>
-          <Button type="primary" @click="openAddModal">
-            {{ $t('abp.message.sendMessage') }}
-          </Button>
-          <!-- <Button type="primary" @click="openBroadCastAddModal">
-            发送通告
-          </Button> -->
-        </Space>
+        <TableAction
+          :actions="[
+            {
+              label: $t('abp.message.sendMessage'),
+              type: 'primary',
+              onClick: openAddModal.bind(null),
+            },
+          ]"
+        />
       </template>
 
       <template #messageLevel="{ row }">
@@ -246,11 +248,16 @@ const onRead = (row: any) => {
       </template>
 
       <template #action="{ row }">
-        <Space>
-          <Button size="small" type="primary" @click="onRead(row)">
-            {{ $t('abp.message.setRead') }}
-          </Button>
-        </Space>
+        <TableAction
+          :actions="[
+            {
+              label: $t('abp.message.setRead'),
+              text: true,
+              size: 'small',
+              onClick: onRead.bind(null, row),
+            },
+          ]"
+        />
       </template>
     </Grid>
 

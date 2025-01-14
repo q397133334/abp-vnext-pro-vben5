@@ -18,6 +18,7 @@
   "yes": "yes",
   "no": "no",
   "confirmDelete": "Confirm to delete",
+  "askConfirmDelete": "Confirm to delete?",
   "confirmEnable": "Confirm to enable",
   "confirmDisable": "Confirm to disable",
   "warning": "warning",

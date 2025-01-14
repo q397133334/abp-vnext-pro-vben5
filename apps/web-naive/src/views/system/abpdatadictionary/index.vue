@@ -8,7 +8,6 @@ import {
   NButton as Button,
   NCol as Col,
   NRow as Row,
-  NSpace as Space,
   NSwitch as Switch,
 } from 'naive-ui';
 
@@ -21,6 +20,7 @@ import {
   postDataDictionaryPageDetail,
   postDataDictionaryStatus,
 } from '#/api-client/index';
+import { TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 
 import DataDictionaryDetail from './DataDictionaryDetailModal.vue';
@@ -300,22 +300,22 @@ const removeDetailRow = async (row: Record<string, any>) => {
           </template>
 
           <template #action="{ row }">
-            <Space>
-              <Button
-                size="small"
-                type="primary"
-                @click="editDataDictionary(row)"
-              >
-                {{ $t('common.edit') }}
-              </Button>
-              <Button
-                size="small"
-                type="error"
-                @click="deleteDataDictionary(row)"
-              >
-                {{ $t('common.delete') }}
-              </Button>
-            </Space>
+            <TableAction
+              :actions="[
+                {
+                  label: $t('common.edit'),
+                  text: true,
+                  size: 'small',
+                  onClick: editDataDictionary.bind(null, row),
+                },
+                {
+                  label: $t('common.delete'),
+                  text: true,
+                  size: 'small',
+                  onClick: deleteDataDictionary.bind(null, row),
+                },
+              ]"
+            />
           </template>
         </Grid>
       </Col>
@@ -339,14 +339,22 @@ const removeDetailRow = async (row: Record<string, any>) => {
           </template>
 
           <template #action="{ row }">
-            <Space>
-              <Button type="primary" @click="editDetailRow(row)">
-                {{ $t('common.edit') }}
-              </Button>
-              <Button type="error" @click="removeDetailRow(row)">
-                {{ $t('common.delete') }}
-              </Button>
-            </Space>
+            <TableAction
+              :actions="[
+                {
+                  label: $t('common.edit'),
+                  text: true,
+                  size: 'small',
+                  onClick: editDetailRow.bind(null, row),
+                },
+                {
+                  label: $t('common.delete'),
+                  text: true,
+                  size: 'small',
+                  onClick: removeDetailRow.bind(null, row),
+                },
+              ]"
+            />
           </template>
         </GridTable>
       </Col>

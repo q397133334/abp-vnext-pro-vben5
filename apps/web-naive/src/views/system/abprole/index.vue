@@ -6,15 +6,10 @@ import { ref } from 'vue';
 
 import { Page, useVbenDrawer, useVbenModal } from '@vben/common-ui';
 
-import {
-  NButton as Button,
-  NSpace as Space,
-  NTag as Tag,
-  NTree as Tree,
-} from 'naive-ui';
+import { NTag as Tag, NTree as Tree } from 'naive-ui';
 
 import { useVbenForm } from '#/adapter/form';
-import { dialog, message as Message } from '#/adapter/naive';
+import { message as Message } from '#/adapter/naive';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   postPermissionsTree,
@@ -24,6 +19,7 @@ import {
   postRolesPage,
   postRolesUpdate,
 } from '#/api-client';
+import { TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 
 import { addRoleFormSchema, querySchema, tableSchema } from './schema';
@@ -138,18 +134,10 @@ function onEdit(record: any) {
   addRoleFormApi.setValues({ ...record, isDefault: record.isDefault ? 1 : 0 });
 }
 
-function onDel(row: any) {
-  dialog.warning({
-    positiveText: $t('common.confirm'),
-    negativeText: $t('common.cancel'),
-    closable: false,
-    title: `${$t('common.confirmDelete')}${row.name} ?`,
-    onPositiveClick: async () => {
-      await postRolesDelete({ body: { id: row.id } });
-      gridApi.reload();
-      Message.success($t('common.deleteSuccess'));
-    },
-  });
+async function onDel(row: any) {
+  await postRolesDelete({ body: { id: row.id } });
+  gridApi.reload();
+  Message.success($t('common.deleteSuccess'));
 }
 
 const authTree = ref([] as any);
@@ -167,11 +155,11 @@ const onAuth = async (row: any) => {
     });
     authTree.value = data?.permissions || [];
     authPolicy.value = data?.allGrants || [];
-    
+
     // 只设置实际的权限节点，父节点会自动根据子节点状态设置
     const grants = data.grants || [];
-    defaultCheckedKeys.value = grants.filter((item: string) => 
-      item.includes('.')  // 只包含实际权限节点
+    defaultCheckedKeys.value = grants.filter(
+      (item: string) => item.includes('.'), // 只包含实际权限节点
     );
   } finally {
     authDrawerApi.setState({ loading: false });
@@ -196,11 +184,12 @@ const updateAuth = async () => {
   try {
     authDrawerApi.setState({ loading: true, confirmLoading: true });
     const permissions = [] as any;
-    
+
     // 处理选中的权限
     const checkedKeys = defaultCheckedKeys.value;
     checkedKeys.forEach((item: string) => {
-      if (item.includes('.')) {  // 只处理实际权限节点
+      if (item.includes('.')) {
+        // 只处理实际权限节点
         permissions.push({
           name: item,
           isGranted: true,
@@ -242,15 +231,17 @@ const updateAuth = async () => {
   <Page auto-content-height>
     <Grid>
       <template #toolbar-actions>
-        <Space>
-          <Button
-            type="primary"
-            v-access:code="'AbpIdentity.Roles.Create'"
-            @click="addModalApi.open"
-          >
-            {{ $t('common.add') }}
-          </Button>
-        </Space>
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.add'),
+              type: 'primary',
+              icon: 'ant-design:plus-outlined',
+              onClick: addModalApi.open.bind(null),
+              auth: ['AbpIdentity.Roles.Create'],
+            },
+          ]"
+        />
       </template>
 
       <template #isDefault="{ row }">
@@ -259,32 +250,35 @@ const updateAuth = async () => {
       </template>
 
       <template #action="{ row }">
-        <Space>
-          <Button
-            size="small"
-            type="primary"
-            v-access:code="'AbpIdentity.Roles.Update'"
-            @click="onEdit(row)"
-          >
-            {{ $t('common.edit') }}
-          </Button>
-          <Button
-            size="small"
-            type="primary"
-            v-access:code="'AbpIdentity.Roles.ManagePermissions'"
-            @click="onAuth(row)"
-          >
-            {{ $t('abp.role.permissions') }}
-          </Button>
-          <Button
-            size="small"
-            type="error"
-            v-access:code="'AbpIdentity.Roles.Delete'"
-            @click="onDel(row)"
-          >
-            {{ $t('common.delete') }}
-          </Button>
-        </Space>
+        <TableAction
+          :actions="[
+            {
+              label: $t('abp.role.permissions'),
+              auth: ['AbpIdentity.Roles.ManagePermissions'],
+              onClick: onAuth.bind(null, row),
+              text: true,
+              size: 'small',
+            },
+          ]"
+          :drop-down-actions="[
+            {
+              label: $t('common.edit'),
+              size: 'small',
+              icon: 'ant-design:edit-outlined',
+              auth: ['AbpIdentity.Roles.Update'],
+              onClick: onEdit.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              icon: 'ant-design:delete-outlined',
+              auth: ['AbpIdentity.Roles.Delete'],
+              popConfirm: {
+                title: $t('common.askConfirmDelete'),
+                confirm: onDel.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
 
@@ -299,12 +293,12 @@ const updateAuth = async () => {
         ref="authTreeRef"
         v-model:checked-keys="defaultCheckedKeys"
         :data="authTree"
-        checkable
         cascade
+        checkable
+        children-field="children"
         expand-on-click
         key-field="key"
         label-field="title"
-        children-field="children"
         @check="handleCheck"
       />
     </AuthDrawer>
