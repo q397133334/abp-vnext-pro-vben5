@@ -6,17 +6,17 @@ import { h, onMounted } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { Button, Space, Tag } from 'ant-design-vue';
+import { Tag } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   postLanguageTextsAllResource,
   postLanguageTextsPage,
 } from '#/api-client';
+import { TableAction } from '#/components/table-action';
 
 // 新增modal
 import AddLanguageTextModal from './AddLanguageTextModal.vue';
-
 // 编辑modal
 import EditLanguageTextModal from './EditLanguageTextModal.vue';
 import { languageTextQuerySchema, languageTextTableSchema } from './schema';
@@ -102,25 +102,31 @@ const handleEdit = async (row: Record<string, any>) => {
   <Page auto-content-height>
     <Grid>
       <template #toolbar-actions>
-        <Space>
-          <Button
-            type="primary"
-            v-access:code="'AbpIdentity.LanguageTexts.Create'"
-            @click="handleAdd"
-          >
-            {{ $t('common.add') }}
-          </Button>
-        </Space>
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.add'),
+              type: 'primary',
+              icon: 'ant-design:plus-outlined',
+              onClick: handleAdd.bind(null),
+              auth: ['AbpIdentity.LanguageTexts.Create'],
+            },
+          ]"
+        />
       </template>
 
       <template #action="{ row }">
-        <Button
-          type="primary"
-          v-access:code="'AbpIdentity.LanguageTexts.Update'"
-          @click="handleEdit(row)"
-        >
-          {{ $t('common.edit') }}
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              size: 'small',
+              onClick: handleEdit.bind(null, row),
+              auth: ['AbpIdentity.LanguageTexts.Update'],
+            },
+          ]"
+        />
       </template>
       <template #isEnabled="{ row }">
         <component

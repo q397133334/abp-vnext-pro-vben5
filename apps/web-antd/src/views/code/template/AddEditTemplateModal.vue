@@ -41,7 +41,7 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Select',
       fieldName: 'controlType',
-      label: $t('abp.code.templateType'),
+      label: $t('code.templateType'),
       componentProps: () => {
         return {
           options: controlTypeList.value,
@@ -58,13 +58,13 @@ const [Form, formApi] = useVbenForm({
     {
       component: 'Input',
       fieldName: 'name',
-      label: $t('abp.code.name'),
+      label: $t('code.name'),
       rules: 'required',
     },
     {
       component: 'Textarea',
       fieldName: 'description',
-      label: $t('abp.code.desc'),
+      label: $t('code.desc'),
       rules: 'required',
     },
   ],
