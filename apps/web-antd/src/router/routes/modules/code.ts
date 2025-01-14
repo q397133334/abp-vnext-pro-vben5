@@ -10,7 +10,7 @@ const routes: RouteRecordRaw[] = [
       icon: 'ant-design:format-painter-filled',
       order: 3,
       title: $t('abp.menu.code'),
-      authority: ['AbpCode'],
+      authority: ['AbpCodeManagement'],
     },
     name: 'code',
     path: '/code',
@@ -22,7 +22,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           icon: 'ant-design:profile-outlined',
           title: $t('abp.menu.code-project'),
-          authority: ['AbpCode.CodeManagement.Project'],
+          authority: ['AbpCodeManagement.Project'],
         },
       },
       {
@@ -32,7 +32,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           icon: 'ant-design:file-markdown-filled',
           title: $t('abp.menu.code-template'),
-          authority: ['AbpCode.CodeManagement.Template'],
+          authority: ['AbpCodeManagement.Template'],
         },
       },
       {
@@ -42,7 +42,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           icon: 'ant-design:copyright-circle-filled',
           title: $t('abp.menu.code-genarate'),
-          authority: ['AbpCode.CodeManagement.Generator'],
+          authority: ['AbpCodeManagement.Generator'],
         },
       },
       {

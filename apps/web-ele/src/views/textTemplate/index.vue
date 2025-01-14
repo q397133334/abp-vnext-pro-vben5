@@ -141,21 +141,35 @@ const exportData = async () => {
         <Space>
           <Button
             type="primary"
-            v-access:code="'AbpProTemplate.TemplateManagement.Create'"
+            v-access:code="'AbpTemplateManagement.Template.Create'"
             @click="handleAdd"
           >
             {{ $t('common.add') }}
           </Button>
-          <Button type="primary" @click="exportData">
+          <Button
+            type="primary"
+            v-access:code="'AbpTemplateManagement.Template.Export'"
+            @click="exportData"
+          >
             {{ $t('common.export') }}
           </Button>
         </Space>
       </template>
       <template #action="{ row }">
-        <Button size="small" type="primary" @click="handleEdit(row)">
+        <Button
+          size="small"
+          type="primary"
+          v-access:code="'AbpTemplateManagement.Template.Update'"
+          @click="handleEdit(row)"
+        >
           {{ $t('common.edit') }}
         </Button>
-        <Button size="small" type="danger" @click="handleDelete(row)">
+        <Button
+          size="small"
+          type="danger"
+          v-access:code="'AbpTemplateManagement.Template.Delete'"
+          @click="handleDelete(row)"
+        >
           {{ $t('common.delete') }}
         </Button>
       </template>

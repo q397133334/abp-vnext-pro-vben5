@@ -114,7 +114,7 @@ const handleViewModel = (row: Record<string, any>) => {
         <Space>
           <Button
             type="primary"
-            v-access:code="'AbpCode.CodeManagement.Project.Create'"
+            v-access:code="'AbpCodeManagement.Project.Create'"
             @click="handleAdd"
           >
             {{ $t('common.add') }}
@@ -135,14 +135,14 @@ const handleViewModel = (row: Record<string, any>) => {
       <template #action="{ row }">
         <Button
           type="link"
-          v-access:code="'AbpCode.CodeManagement.Project.Model'"
+          v-access:code="'AbpCodeManagement.Project.Model'"
           @click="handleViewModel(row)"
         >
           {{ $t('code.model') }}
         </Button>
         <Button
           type="link"
-          v-access:code="'AbpCode.CodeManagement.Project.Update'"
+          v-access:code="'AbpCodeManagement.Project.Update'"
           @click="handleEdit(row)"
         >
           {{ $t('common.edit') }}
@@ -150,7 +150,7 @@ const handleViewModel = (row: Record<string, any>) => {
         <Button
           danger
           type="link"
-          v-access:code="'AbpCode.CodeManagement.Project.Delete'"
+          v-access:code="'AbpCodeManagement.Project.Delete'"
           @click="handleDelete(row)"
         >
           {{ $t('common.delete') }}
