@@ -131,11 +131,6 @@ export type ApplicationSettingConfigurationDto = {
     } | null;
 };
 
-/**
- * 类型
- */
-export type BookType = 10 | 20 | 30;
-
 export type ChangePasswordInput = {
     currentPassword?: (string) | null;
     newPassword: string;
@@ -164,41 +159,33 @@ export type ControllerInterfaceApiDescriptionModel = {
     methods?: Array<InterfaceMethodApiDescriptionModel> | null;
 };
 
+/**
+ * 控制策略
+ */
 export type ControlType = 10 | 20 | 30 | 40;
 
 export type CopyTemplateInput = {
     id?: string;
+    /**
+     * 名称
+     */
     name?: (string) | null;
+    /**
+     * 备注
+     */
     remark?: (string) | null;
 };
 
 export type CreateAggregateInput = {
     projectId?: string;
+    /**
+     * 编码
+     */
     code: string;
+    /**
+     * 描述
+     */
     description: string;
-};
-
-/**
- * 创建书籍
- */
-export type CreateBookInput = {
-    /**
-     * 编号
-     */
-    no: string;
-    /**
-     * 名称
-     */
-    name: string;
-    /**
-     * 价格
-     */
-    price: number;
-    /**
-     * 备注
-     */
-    remark?: (string) | null;
-    bookType?: BookType;
 };
 
 export type CreateDataDictinaryDetailInput = {
@@ -217,38 +204,104 @@ export type CreateDataDictinaryInput = {
 
 export type CreateEntityModelInput = {
     id?: string;
+    /**
+     * 编码
+     */
     code: string;
+    /**
+     * 描述
+     */
     description: string;
     relationalType?: RelationalType;
 };
 
 export type CreateEntityModelPropertyInput = {
+    /**
+     * 实体模型Id
+     */
     id?: string;
+    /**
+     * 编码
+     */
     code: string;
+    /**
+     * 描述
+     */
     description: string;
+    /**
+     * 必填
+     */
     isRequired?: boolean;
+    /**
+     * 字符串最大长度
+     */
     maxLength?: (number) | null;
+    /**
+     * 字符串最小长度
+     */
     minLength?: (number) | null;
+    /**
+     * 当类型为decimal时的小数位数 (18,4) 中的18
+     */
     decimalPrecision?: (number) | null;
+    /**
+     * 当类型为decimal时的字段长度 (18,4) 中的4
+     */
     decimalScale?: (number) | null;
+    /**
+     * 枚举类型Id
+     */
     enumTypeId?: (string) | null;
+    /**
+     * 数据类型Id
+     */
     dataTypeId?: (string) | null;
+    /**
+     * 允许作为查询条件
+     */
     allowSearch?: boolean;
+    /**
+     * 允许添加
+     */
     allowAdd?: boolean;
+    /**
+     * 允许编辑
+     */
     allowEdit?: boolean;
 };
 
 export type CreateEnumTypeInput = {
+    /**
+     * 编码
+     */
     code: string;
+    /**
+     * 描述
+     */
     description: string;
+    /**
+     * 实体模型Id
+     */
     entityModelId?: string;
     projectId?: string;
 };
 
 export type CreateEnumTypePropertyInput = {
+    /**
+     * Id
+     */
     enumTypeId?: string;
+    /**
+     * 编码
+     */
     code: string;
+    /**
+     * 枚举值
+     */
     value?: number;
+    /**
+     * 描述
+     */
     description: string;
 };
 
@@ -306,32 +359,80 @@ export type CreateOrganizationUnitInput = {
 };
 
 export type CreateProjectInput = {
+    /**
+     * 负责人
+     */
     owner?: (string) | null;
+    /**
+     * 公司名称
+     */
     companyName?: (string) | null;
+    /**
+     * 项目名称
+     */
     projectName?: (string) | null;
+    /**
+     * 备注
+     */
     remark?: (string) | null;
+    /**
+     * 是否支持多租户
+     */
     supportTenant?: boolean;
 };
 
 export type CreateTemplateDetailInput = {
+    /**
+     * 模板id
+     */
     templateId?: string;
     parentId?: (string) | null;
     templateType?: TemplateType;
     controlType?: ControlType;
+    /**
+     * 模板类型
+     */
     name?: (string) | null;
+    /**
+     * 描述
+     */
     description?: (string) | null;
+    /**
+     * 模板内容
+     */
     content?: (string) | null;
 };
 
 export type CreateTemplateInput = {
+    /**
+     * 名称
+     */
     name?: (string) | null;
+    /**
+     * 备注
+     */
     remark?: (string) | null;
 };
 
+/**
+ * 创建模板
+ */
 export type CreateTextTemplateInput = {
+    /**
+     * 名称
+     */
     name: string;
+    /**
+     * 编码
+     */
     code: string;
+    /**
+     * 内容
+     */
     content: string;
+    /**
+     * 语言
+     */
     cultureName: string;
 };
 
@@ -374,8 +475,17 @@ export type CurrentUserDto = {
 
 export type DataTypeDto = {
     id?: string;
+    /**
+     * 编码
+     */
     code?: (string) | null;
+    /**
+     * 描述
+     */
     description?: (string) | null;
+    /**
+     * 是否是枚举
+     */
     isEnum?: boolean;
 };
 
@@ -390,16 +500,6 @@ export type DateTimeFormatDto = {
 };
 
 export type DeleteAggregateInput = {
-    id?: string;
-};
-
-/**
- * 删除书籍
- */
-export type DeleteBookInput = {
-    /**
-     * 书籍Id
-     */
     id?: string;
 };
 
@@ -430,12 +530,21 @@ export type DeleteEntityModelPropertyInput = {
 };
 
 export type DeleteEnumTypeInput = {
+    /**
+     * Id
+     */
     id?: string;
     entityModelId?: string;
 };
 
 export type DeleteEnumTypePropertyInput = {
+    /**
+     * Id
+     */
     enumTypeId?: string;
+    /**
+     * Id
+     */
     id?: string;
 };
 
@@ -467,13 +576,37 @@ export type DeleteTemplateInput = {
     id?: string;
 };
 
+/**
+ * 删除模板
+ */
 export type DeleteTextTemplateInput = {
+    /**
+     * 模板Id
+     */
     id?: string;
+};
+
+export type DisabledTwoFactorInput = {
+    /**
+     * 验证码
+     */
+    code: string;
 };
 
 export type DownCodeInput = {
     templateId?: string;
     projectId?: string;
+};
+
+export type EnabledTwoFactorInput = {
+    /**
+     * 验证码
+     */
+    code: string;
+    /**
+     * 密钥
+     */
+    secret: string;
 };
 
 export type EntityChangeType = 0 | 1 | 2;
@@ -753,7 +886,13 @@ export type GetDataTypeInput = {
 
 export type GetDataTypeOutput = {
     id?: string;
+    /**
+     * 枚举编码
+     */
     code?: (string) | null;
+    /**
+     * 枚举描述
+     */
     description?: (string) | null;
 };
 
@@ -763,27 +902,66 @@ export type GetEntityModelInput = {
 
 export type GetEntityModelOutput = {
     id?: string;
+    /**
+     * 编码
+     */
     code?: (string) | null;
+    /**
+     * 描述
+     */
     description?: (string) | null;
     relationalType?: RelationalType;
+    /**
+     * 实体模型属性集合
+     */
     entityModelProperties?: Array<GetEntityModelPropertyOutput> | null;
     entityModelOutputs?: Array<GetEntityModelOutput> | null;
 };
 
 export type GetEntityModelPropertyOutput = {
     id?: string;
+    /**
+     * 名称
+     */
     code?: (string) | null;
+    /**
+     * 描述
+     */
     description?: (string) | null;
+    /**
+     * 必填
+     */
     isRequired?: boolean;
+    /**
+     * 字符串最大长度
+     */
     maxLength?: (number) | null;
+    /**
+     * 字符串最小长度
+     */
     minLength?: (number) | null;
+    /**
+     * 当类型为decimal时的小数位数 (18,4) 中的18
+     */
     decimalPrecision?: (number) | null;
+    /**
+     * 当类型为decimal时的字段长度 (18,4) 中的4
+     */
     decimalScale?: (number) | null;
+    /**
+     * 枚举类型Id
+     */
     enumTypeId?: (string) | null;
     isEnum?: boolean;
     enumTypeOutput?: GetEnumTypeOutput;
+    /**
+     * 数据类型Id
+     */
     dataTypeId?: (string) | null;
     dataTypeOutput?: GetDataTypeOutput;
+    /**
+     * 实体模型Id
+     */
     entityModelId?: string;
 };
 
@@ -792,11 +970,29 @@ export type GetEntityModelTreeInput = {
 };
 
 export type GetEntityModelTreeOutput = {
+    /**
+     * 模板id
+     */
     key?: string;
+    /**
+     * 图标
+     */
     icon?: (string) | null;
+    /**
+     * 描述
+     */
     code?: (string) | null;
+    /**
+     * 描述
+     */
     title?: (string) | null;
+    /**
+     * 父类Id
+     */
     parentId?: (string) | null;
+    /**
+     * 描述
+     */
     description?: (string) | null;
     relationalType?: RelationalType;
     children?: Array<GetEntityModelTreeOutput> | null;
@@ -804,7 +1000,13 @@ export type GetEntityModelTreeOutput = {
 
 export type GetEnumTypeOutput = {
     id?: string;
+    /**
+     * 枚举编码
+     */
     code?: (string) | null;
+    /**
+     * 枚举描述
+     */
     description?: (string) | null;
 };
 
@@ -876,14 +1078,43 @@ export type GetPermissionInput = {
     providerKey?: (string) | null;
 };
 
+export type GetQRCodeOutput = {
+    /**
+     * base64 二维码
+     */
+    qrCode?: (string) | null;
+    /**
+     * 密钥
+     */
+    secret?: (string) | null;
+};
+
 export type GetTemplateTreeOutput = {
+    /**
+     * 模板id
+     */
     key?: string;
     templateType?: TemplateType;
     controlType?: ControlType;
+    /**
+     * 图标
+     */
     icon?: (string) | null;
+    /**
+     * 模板名称
+     */
     name?: (string) | null;
+    /**
+     * 描述
+     */
     description?: (string) | null;
+    /**
+     * 描述
+     */
     title?: (string) | null;
+    /**
+     * 模板内容
+     */
     content?: (string) | null;
     children?: Array<GetTemplateTreeOutput> | null;
 };
@@ -1037,11 +1268,6 @@ export type IdentityUserDto = {
     lastPasswordChangeTime?: (string) | null;
 };
 
-export type IdentityUserDtoPagedResultDto = {
-    items?: Array<IdentityUserDto> | null;
-    totalCount?: number;
-};
-
 export type IdentityUserUpdateDto = {
     readonly extraProperties?: {
         [key: string]: unknown;
@@ -1098,6 +1324,24 @@ export type LocalizableStringDto = {
 export type LockUserInput = {
     userId?: string;
     locked?: boolean;
+};
+
+/**
+ * 登录
+ */
+export type Login2FAInput = {
+    /**
+     * 用户名或者邮箱
+     */
+    name?: (string) | null;
+    /**
+     * 密码
+     */
+    password?: (string) | null;
+    /**
+     * 双因素验证码
+     */
+    code?: (string) | null;
 };
 
 /**
@@ -1164,6 +1408,17 @@ export type MultiTenancyInfoDto = {
     isEnabled?: boolean;
 };
 
+export type MyProfileOutput = {
+    tenantId?: (string) | null;
+    userName?: (string) | null;
+    name?: (string) | null;
+    surname?: (string) | null;
+    email?: (string) | null;
+    phoneNumber?: (string) | null;
+    isActive?: boolean;
+    twoFactorEnabled?: boolean;
+};
+
 export type NameValue = {
     name?: (string) | null;
     value?: (string) | null;
@@ -1176,69 +1431,6 @@ export type ObjectExtensionsDto = {
     enums?: {
         [key: string]: ExtensionEnumDto;
     } | null;
-};
-
-/**
- * 分页查询书籍
- */
-export type PageBookInput = {
-    /**
-     * 当前页面.默认从1开始
-     */
-    pageIndex?: number;
-    /**
-     * 每页多少条.每页显示多少记录
-     */
-    pageSize?: number;
-    /**
-     * 跳过多少条
-     */
-    readonly skipCount?: number;
-    /**
-     * 开始创建时间
-     */
-    startCreationTime?: (string) | null;
-    /**
-     * 结束创建时间
-     */
-    endCreationTime?: (string) | null;
-};
-
-/**
- * 分页查询书籍
- */
-export type PageBookOutput = {
-    /**
-     * 书籍Id
-     */
-    id?: string;
-    /**
-     * 编号
-     */
-    no?: (string) | null;
-    /**
-     * 名称
-     */
-    name?: (string) | null;
-    /**
-     * 价格
-     */
-    price?: number;
-    /**
-     * 备注
-     */
-    remark?: (string) | null;
-    bookType?: BookType;
-    readonly bookTypeDescription?: (string) | null;
-    /**
-     * 创建时间
-     */
-    creationTime?: string;
-};
-
-export type PageBookOutputPagedResultDto = {
-    items?: Array<PageBookOutput> | null;
-    totalCount?: number;
 };
 
 export type PageEntityModelInput = {
@@ -1260,20 +1452,53 @@ export type PageEntityModelInput = {
 
 export type PageEntityModelPropertyOutput = {
     id?: (string) | null;
+    /**
+     * 实体模型Id
+     */
     entityModelId?: string;
+    /**
+     * 名称
+     */
     code?: (string) | null;
+    /**
+     * 描述
+     */
     description?: (string) | null;
+    /**
+     * 必填
+     */
     isRequired?: boolean;
+    /**
+     * 字符串最大长度
+     */
     maxLength?: (number) | null;
+    /**
+     * 字符串最小长度
+     */
     minLength?: (number) | null;
+    /**
+     * 当类型为decimal时的小数位数 (18,4) 中的18
+     */
     decimalPrecision?: (number) | null;
+    /**
+     * 当类型为decimal时的字段长度 (18,4) 中的4
+     */
     decimalScale?: (number) | null;
     dataTypeId?: string;
     isEnum?: boolean;
     dataTypeCode?: (string) | null;
     dataTypeDescription?: (string) | null;
+    /**
+     * 允许作为查询条件
+     */
     allowSearch?: boolean;
+    /**
+     * 允许添加
+     */
     allowAdd?: boolean;
+    /**
+     * 允许编辑
+     */
     allowEdit?: boolean;
 };
 
@@ -1301,8 +1526,17 @@ export type PageEnumTypeInput = {
 
 export type PageEnumTypeOutput = {
     id?: (string) | null;
+    /**
+     * 实体模型Id
+     */
     entityModelId?: string;
+    /**
+     * 名称
+     */
     code?: (string) | null;
+    /**
+     * 描述
+     */
     description?: (string) | null;
     creationTime?: string;
 };
@@ -1331,14 +1565,61 @@ export type PageEnumTypePropertyInput = {
 
 export type PageEnumTypePropertyOutput = {
     id?: (string) | null;
+    /**
+     * 名称
+     */
     code?: (string) | null;
+    /**
+     * 名称
+     */
     value?: number;
+    /**
+     * 描述
+     */
     description?: (string) | null;
     creationTime?: string;
 };
 
 export type PageEnumTypePropertyOutputPagedResultDto = {
     items?: Array<PageEnumTypePropertyOutput> | null;
+    totalCount?: number;
+};
+
+export type PageIdentityUserOutput = {
+    readonly extraProperties?: {
+        [key: string]: unknown;
+    } | null;
+    id?: string;
+    creationTime?: string;
+    creatorId?: (string) | null;
+    lastModificationTime?: (string) | null;
+    lastModifierId?: (string) | null;
+    isDeleted?: boolean;
+    deleterId?: (string) | null;
+    deletionTime?: (string) | null;
+    tenantId?: (string) | null;
+    userName?: (string) | null;
+    name?: (string) | null;
+    surname?: (string) | null;
+    email?: (string) | null;
+    emailConfirmed?: boolean;
+    phoneNumber?: (string) | null;
+    phoneNumberConfirmed?: boolean;
+    isActive?: boolean;
+    lockoutEnabled?: boolean;
+    accessFailedCount?: number;
+    lockoutEnd?: (string) | null;
+    concurrencyStamp?: (string) | null;
+    entityVersion?: number;
+    lastPasswordChangeTime?: (string) | null;
+    /**
+     * 是否开启双因素验证码
+     */
+    twoFactorEnabled?: boolean;
+};
+
+export type PageIdentityUserOutputPagedResultDto = {
+    items?: Array<PageIdentityUserOutput> | null;
     totalCount?: number;
 };
 
@@ -1524,6 +1805,9 @@ export type PageTenantConnectionStringOutputPagedResultDto = {
     totalCount?: number;
 };
 
+/**
+ * 分页查询模板
+ */
 export type PageTextTemplateInput = {
     /**
      * 当前页面.默认从1开始
@@ -1537,19 +1821,55 @@ export type PageTextTemplateInput = {
      * 跳过多少条
      */
     readonly skipCount?: number;
+    /**
+     * 名称
+     */
     name?: (string) | null;
+    /**
+     * 编码
+     */
     code?: (string) | null;
+    /**
+     * 内容
+     */
     content?: (string) | null;
+    /**
+     * 开始创建时间
+     */
     startCreationTime?: (string) | null;
+    /**
+     * 结束创建时间
+     */
     endCreationTime?: (string) | null;
 };
 
+/**
+ * 分页查询模板
+ */
 export type PageTextTemplateOutput = {
+    /**
+     * 模板Id
+     */
     id?: string;
+    /**
+     * 名称
+     */
     name?: (string) | null;
+    /**
+     * 编码
+     */
     code?: (string) | null;
+    /**
+     * 内容
+     */
     content?: (string) | null;
+    /**
+     * 语言
+     */
     cultureName?: (string) | null;
+    /**
+     * 创建时间
+     */
     creationTime?: string;
 };
 
@@ -2137,11 +2457,29 @@ export type ProjectDto = {
     lastModificationTime?: (string) | null;
     lastModifierId?: (string) | null;
     tenantId?: (string) | null;
+    /**
+     * 负责人
+     */
     owner?: (string) | null;
+    /**
+     * 名称空间
+     */
     nameSpace?: (string) | null;
+    /**
+     * 公司名称
+     */
     companyName?: (string) | null;
+    /**
+     * 项目名称
+     */
     projectName?: (string) | null;
+    /**
+     * 备注
+     */
     remark?: (string) | null;
+    /**
+     * 是否支持多租户
+     */
     supportTenant?: boolean;
 };
 
@@ -2192,6 +2530,10 @@ export type RemoveRoleToOrganizationUnitInput = {
 export type RemoveUserToOrganizationUnitInput = {
     userId?: string;
     organizationUnitId?: string;
+};
+
+export type ResetTwoFactorInput = {
+    userId?: string;
 };
 
 export type ReturnValueApiDescriptionModel = {
@@ -2288,17 +2630,38 @@ export type StringStringFromSelector = {
     readonly label?: (string) | null;
 };
 
+/**
+ * 模板明细
+ */
 export type TemplateDetailDto = {
     id?: string;
+    /**
+     * 模板id
+     */
     templateId?: string;
     templateType?: TemplateType;
     controlType?: ControlType;
+    /**
+     * 父级id
+     */
     parentId?: (string) | null;
+    /**
+     * 模板名称
+     */
     name?: (string) | null;
+    /**
+     * 描述
+     */
     description?: (string) | null;
+    /**
+     * 模板内容
+     */
     content?: (string) | null;
 };
 
+/**
+ * 模板
+ */
 export type TemplateDto = {
     id?: string;
     creationTime?: string;
@@ -2306,8 +2669,17 @@ export type TemplateDto = {
     lastModificationTime?: (string) | null;
     lastModifierId?: (string) | null;
     tenantId?: (string) | null;
+    /**
+     * 名称
+     */
     name?: (string) | null;
+    /**
+     * 备注
+     */
     remark?: (string) | null;
+    /**
+     * 关联属性1:N 模板明细集合
+     */
     templateDetails?: Array<TemplateDetailDto> | null;
 };
 
@@ -2317,14 +2689,35 @@ export type TemplateDtoPagedResultDto = {
 };
 
 export type TemplateTreeDto = {
+    /**
+     * 模板id
+     */
     key?: string;
     templateType?: TemplateType;
     controlType?: ControlType;
+    /**
+     * 图标
+     */
     icon?: (string) | null;
+    /**
+     * 是否是文件夹
+     */
     isFolder?: boolean;
+    /**
+     * 模板名称
+     */
     name?: (string) | null;
+    /**
+     * 描述
+     */
     description?: (string) | null;
+    /**
+     * 描述
+     */
     title?: (string) | null;
+    /**
+     * 模板内容
+     */
     content?: (string) | null;
     children?: Array<TemplateTreeDto> | null;
 };
@@ -2380,35 +2773,14 @@ export type TypeApiDescriptionModel = {
 
 export type UpdateAggregateInput = {
     id?: string;
+    /**
+     * 编码
+     */
     code: string;
+    /**
+     * 描述
+     */
     description: string;
-};
-
-/**
- * 更新书籍
- */
-export type UpdateBookInput = {
-    /**
-     * 书籍Id
-     */
-    id?: string;
-    /**
-     * 编号
-     */
-    no: string;
-    /**
-     * 名称
-     */
-    name: string;
-    /**
-     * 价格
-     */
-    price: number;
-    /**
-     * 备注
-     */
-    remark?: (string) | null;
-    bookType?: BookType;
 };
 
 export type UpdateDataDictinaryInput = {
@@ -2428,7 +2800,13 @@ export type UpdateDetailInput = {
 
 export type UpdateEntityModelInput = {
     id?: string;
+    /**
+     * 编码
+     */
     code: string;
+    /**
+     * 描述
+     */
     description: string;
     relationalType?: RelationalType;
 };
@@ -2436,32 +2814,92 @@ export type UpdateEntityModelInput = {
 export type UpdateEntityModelPropertyInput = {
     id?: string;
     propertyId?: string;
+    /**
+     * 编码
+     */
     code: string;
+    /**
+     * 描述
+     */
     description: string;
+    /**
+     * 必填
+     */
     isRequired?: boolean;
+    /**
+     * 字符串最大长度
+     */
     maxLength?: (number) | null;
+    /**
+     * 字符串最小长度
+     */
     minLength?: (number) | null;
+    /**
+     * 当类型为decimal时的小数位数 (18,4) 中的18
+     */
     decimalPrecision?: (number) | null;
+    /**
+     * 当类型为decimal时的字段长度 (18,4) 中的4
+     */
     decimalScale?: (number) | null;
+    /**
+     * 枚举类型Id
+     */
     enumTypeId?: (string) | null;
+    /**
+     * 数据类型Id
+     */
     dataTypeId?: (string) | null;
+    /**
+     * 实体模型Id
+     */
     entityModelId?: string;
+    /**
+     * 允许作为查询条件
+     */
     allowSearch?: boolean;
+    /**
+     * 允许添加
+     */
     allowAdd?: boolean;
+    /**
+     * 允许编辑
+     */
     allowEdit?: boolean;
 };
 
 export type UpdateEnumTypeInput = {
     id?: string;
+    /**
+     * 编码
+     */
     code: string;
+    /**
+     * 描述
+     */
     description: string;
 };
 
 export type UpdateEnumTypePropertyInput = {
+    /**
+     * Id
+     */
     enumTypeId?: string;
+    /**
+     * Id
+     */
     id?: string;
+    /**
+     * 编码
+     */
     code: string;
+    /**
+     * 枚举值
+     */
     value?: number;
+    /**
+     * 描述
+     */
     description: string;
 };
 
@@ -2548,10 +2986,25 @@ export type UpdatePermissionsDto = {
 
 export type UpdateProjectInput = {
     id?: string;
+    /**
+     * 负责人
+     */
     owner?: (string) | null;
+    /**
+     * 公司名称
+     */
     companyName?: (string) | null;
+    /**
+     * 项目名称
+     */
     projectName?: (string) | null;
+    /**
+     * 备注
+     */
     remark?: (string) | null;
+    /**
+     * 是否支持多租户
+     */
     supportTenant?: boolean;
 };
 
@@ -2573,23 +3026,47 @@ export type UpdateSettingInput = {
 };
 
 export type UpdateTemplateDetailContentInput = {
+    /**
+     * 模板id
+     */
     templateId?: string;
     templateDetailId?: string;
+    /**
+     * 模板内容
+     */
     content?: (string) | null;
 };
 
 export type UpdateTemplateDetailInput = {
+    /**
+     * 模板id
+     */
     templateId?: string;
     templateDetailId?: string;
     controlType?: ControlType;
+    /**
+     * 模板类型
+     */
     name?: (string) | null;
+    /**
+     * 描述
+     */
     description?: (string) | null;
+    /**
+     * 模板内容
+     */
     content?: (string) | null;
 };
 
 export type UpdateTemplateInput = {
     id?: string;
+    /**
+     * 名称
+     */
     name?: (string) | null;
+    /**
+     * 备注
+     */
     remark?: (string) | null;
 };
 
@@ -2598,11 +3075,29 @@ export type UpdateTenantInput = {
     name?: (string) | null;
 };
 
+/**
+ * 更新模板
+ */
 export type UpdateTextTemplateInput = {
+    /**
+     * 模板Id
+     */
     id?: string;
+    /**
+     * 名称
+     */
     name: string;
+    /**
+     * 编码
+     */
     code: string;
+    /**
+     * 内容
+     */
     content: string;
+    /**
+     * 语言
+     */
     cultureName: string;
 };
 
@@ -2660,6 +3155,14 @@ export type PostApiAppAccountLoginResponse = (LoginOutput);
 
 export type PostApiAppAccountLoginError = (RemoteServiceErrorResponse);
 
+export type PostApiAppAccountLogin2FaData = {
+    body?: Login2FAInput;
+};
+
+export type PostApiAppAccountLogin2FaResponse = (LoginOutput);
+
+export type PostApiAppAccountLogin2FaError = (RemoteServiceErrorResponse);
+
 export type PostAuditLogsPageData = {
     body?: PagingAuditLogInput;
 };
@@ -2667,38 +3170,6 @@ export type PostAuditLogsPageData = {
 export type PostAuditLogsPageResponse = (PagingAuditLogOutputPagedResultDto);
 
 export type PostAuditLogsPageError = (RemoteServiceErrorResponse);
-
-export type PostBooksPageData = {
-    body?: PageBookInput;
-};
-
-export type PostBooksPageResponse = (PageBookOutputPagedResultDto);
-
-export type PostBooksPageError = (RemoteServiceErrorResponse);
-
-export type PostBooksCreateData = {
-    body?: CreateBookInput;
-};
-
-export type PostBooksCreateResponse = (unknown);
-
-export type PostBooksCreateError = (RemoteServiceErrorResponse);
-
-export type PostBooksUpdateData = {
-    body?: UpdateBookInput;
-};
-
-export type PostBooksUpdateResponse = (unknown);
-
-export type PostBooksUpdateError = (RemoteServiceErrorResponse);
-
-export type PostBooksDeleteData = {
-    body?: DeleteBookInput;
-};
-
-export type PostBooksDeleteResponse = (unknown);
-
-export type PostBooksDeleteError = (RemoteServiceErrorResponse);
 
 export type PostDataDictionaryPageData = {
     body?: PagingDataDictionaryInput;
@@ -3536,7 +4007,7 @@ export type PostUsersPageData = {
     body?: PagingUserListInput;
 };
 
-export type PostUsersPageResponse = (IdentityUserDtoPagedResultDto);
+export type PostUsersPageResponse = (PageIdentityUserOutputPagedResultDto);
 
 export type PostUsersPageError = (RemoteServiceErrorResponse);
 
@@ -3611,3 +4082,39 @@ export type PostUsersFindByUserNameData = {
 export type PostUsersFindByUserNameResponse = (IdentityUserDto);
 
 export type PostUsersFindByUserNameError = (RemoteServiceErrorResponse);
+
+export type PostUsersMyProfileResponse = (MyProfileOutput);
+
+export type PostUsersMyProfileError = (RemoteServiceErrorResponse);
+
+export type PostUsersCanUseTwoFactorResponse = (boolean);
+
+export type PostUsersCanUseTwoFactorError = (RemoteServiceErrorResponse);
+
+export type PostUsersGetQrCodeResponse = (GetQRCodeOutput);
+
+export type PostUsersGetQrCodeError = (RemoteServiceErrorResponse);
+
+export type PostUsersEnabledTwoFactorData = {
+    body?: EnabledTwoFactorInput;
+};
+
+export type PostUsersEnabledTwoFactorResponse = (unknown);
+
+export type PostUsersEnabledTwoFactorError = (RemoteServiceErrorResponse);
+
+export type PostUsersDisabledTwoFactorData = {
+    body?: DisabledTwoFactorInput;
+};
+
+export type PostUsersDisabledTwoFactorResponse = (unknown);
+
+export type PostUsersDisabledTwoFactorError = (RemoteServiceErrorResponse);
+
+export type PostUsersResetTwoFactorData = {
+    body?: ResetTwoFactorInput;
+};
+
+export type PostUsersResetTwoFactorResponse = (unknown);
+
+export type PostUsersResetTwoFactorError = (RemoteServiceErrorResponse);

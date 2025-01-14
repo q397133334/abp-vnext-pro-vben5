@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import type { VbenFormProps } from '#/adapter/form';
 import type { VxeGridProps } from '#/adapter/vxe-table';
+
 import { h, ref } from 'vue';
+
 import { Page, useVbenModal } from '@vben/common-ui';
+
 import {
   ElButton as Button,
-  ElCheckboxGroup,
   ElCheckbox,
+  ElCheckboxGroup,
   ElDropdown,
-  ElDropdownMenu,
   ElDropdownItem,
+  ElDropdownMenu,
   ElMessage,
   ElMessageBox,
   ElSpace,
@@ -27,11 +30,13 @@ import {
   postUsersDelete,
   postUsersLock,
   postUsersPage,
+  postUsersResetTwoFactor,
   postUsersRole,
   postUsersUpdate,
 } from '#/api-client';
 import fileRequest from '#/api-client-config/index-blob';
 import { $t } from '#/locales';
+
 import {
   addUserFormSchema,
   editUserFormSchemaEdit,
@@ -135,9 +140,9 @@ async function submit() {
   const formValues = await formApi.getValues();
   const fetchParams: any = isEdit
     ? {
-      userInfo: { ...formValues, roleNames: checkedRoles.value },
-      userId: editRow.value.id,
-    }
+        userInfo: { ...formValues, roleNames: checkedRoles.value },
+        userId: editRow.value.id,
+      }
     : { ...formValues, roleNames: checkedRoles.value };
 
   try {
@@ -145,9 +150,11 @@ async function submit() {
     const resp = await api({ body: fetchParams });
     if (resp.status === 200 || resp.status === 204) {
       ElMessage({
-      type: 'success',
-      message: editRow.value.id ? $t('common.editSuccess') : $t('common.addSuccess'),
-    })
+        type: 'success',
+        message: editRow.value.id
+          ? $t('common.editSuccess')
+          : $t('common.addSuccess'),
+      });
       userModalApi.close();
       gridApi.reload();
     }
@@ -168,19 +175,16 @@ async function onEdit(record: any) {
 }
 
 function onDel(row: any) {
-  ElMessageBox.confirm(
-    `${$t('common.confirmDelete')}${row.userName} ?`,
-    {
-      type: 'warning',
-    }
-  ).then(async () => {
+  ElMessageBox.confirm(`${$t('common.confirmDelete')}${row.userName} ?`, {
+    type: 'warning',
+  }).then(async () => {
     await postUsersDelete({ body: { id: row.id } });
     gridApi.reload();
     ElMessage({
       type: 'success',
       message: $t('common.deleteSuccess'),
-    })
-  })
+    });
+  });
 }
 
 const onLock = async (row: Record<string, any>) => {
@@ -211,7 +215,7 @@ const exportData = async () => {
     const formValues = await gridApi.formApi.getValues();
     const {
       pager: { currentPage = 1, pageSize = 10 },
-    } = await gridApi.grid.getProxyInfo() as any;
+    } = (await gridApi.grid.getProxyInfo()) as any;
     const pagination = { pageIndex: currentPage, pageSize };
     const { data } = await fileRequest.post(
       '/Users/export',
@@ -230,6 +234,18 @@ const exportData = async () => {
     gridApi.setLoading(false);
   }
 };
+function resetTwoFactor(row: any) {
+  ElMessageBox.confirm(`${$t('common.confirmDelete')}${row.userName} ?`, {
+    type: 'warning',
+  }).then(async () => {
+    await postUsersResetTwoFactor({ body: { userId: row.id } });
+    gridApi.reload();
+    ElMessage({
+      type: 'success',
+      message: $t('abp.user.resetTwoFactor') + $t('common.success'),
+    });
+  });
+}
 </script>
 
 <template>
@@ -237,41 +253,86 @@ const exportData = async () => {
     <Grid>
       <template #toolbar-actions>
         <ElSpace>
-          <Button type="primary" v-access:code="'AbpIdentity.Users.Create'" @click="openAddModal">
+          <Button
+            type="primary"
+            v-access:code="'AbpIdentity.Users.Create'"
+            @click="openAddModal"
+          >
             {{ $t('common.add') }}
           </Button>
-          <Button type="primary" v-access:code="'AbpIdentity.Users.Export'" @click="exportData">
+          <Button
+            type="primary"
+            v-access:code="'AbpIdentity.Users.Export'"
+            @click="exportData"
+          >
             {{ $t('common.export') }}
           </Button>
         </ElSpace>
       </template>
 
       <template #isActive="{ row }">
-        <component :is="h(
-          ElTag,
-          { type: row.isActive ? 'success' : 'danger' },
-          row.isActive ? $t('common.enabled') : $t('common.disabled'),
-        )
-          " />
+        <component
+          :is="
+            h(
+              ElTag,
+              { type: row.isActive ? 'success' : 'danger' },
+              row.isActive ? $t('common.enabled') : $t('common.disabled'),
+            )
+          "
+        />
+      </template>
+      <template #twoFactorEnabled="{ row }">
+        <component
+          :is="
+            h(
+              ElTag,
+              { color: row.twoFactorEnabled ? 'green' : 'red' },
+              row.twoFactorEnabled
+                ? $t('common.enabled')
+                : $t('common.disabled'),
+            )
+          "
+        />
       </template>
       <template #action="{ row }">
         <ElSpace>
-          <Button size="small" type="primary" v-access:code="'AbpIdentity.Users.Update'" @click="onEdit(row)">
+          <Button
+            size="small"
+            type="primary"
+            v-access:code="'AbpIdentity.Users.Update'"
+            @click="onEdit(row)"
+          >
             {{ $t('common.edit') }}
           </Button>
           <ElDropdown>
             <Button size="small"> ...... </Button>
             <template #dropdown>
               <ElDropdownMenu>
-                <ElDropdownItem v-access:code="'AbpIdentity.Users.Enable'" @click="onLock(row)">
-                  <ElText type="primary"> {{
-                    row.isActive
-                      ? $t('common.disabled')
-                      : $t('common.enabled')
-                    }}</ElText>
+                <ElDropdownItem
+                  v-access:code="'AbpIdentity.Users.Enable'"
+                  @click="onLock(row)"
+                >
+                  <ElText type="primary">
+                    {{
+                      row.isActive
+                        ? $t('common.disabled')
+                        : $t('common.enabled')
+                    }}
+                  </ElText>
                 </ElDropdownItem>
-                <ElDropdownItem v-access:code="'AbpIdentity.Users.Delete'" @click="onDel(row)">
+                <ElDropdownItem
+                  v-access:code="'AbpIdentity.Users.Delete'"
+                  @click="onDel(row)"
+                >
                   <ElText type="danger">{{ $t('common.delete') }}</ElText>
+                </ElDropdownItem>
+                <ElDropdownItem
+                  v-access:code="'AbpIdentity.Users.ResetTwoFactor'"
+                  @click="resetTwoFactor(row)"
+                >
+                  <ElText type="primary">
+                    {{ $t('abp.user.resetTwoFactor') }}
+                  </ElText>
                 </ElDropdownItem>
               </ElDropdownMenu>
             </template>
@@ -280,14 +341,25 @@ const exportData = async () => {
       </template>
     </Grid>
 
-    <UserModal :title="editRow.id ? $t('common.edit') : $t('common.add')" class="w-[800px]">
+    <UserModal
+      :title="editRow.id ? $t('common.edit') : $t('common.add')"
+      class="w-[800px]"
+    >
       <ElTabs>
         <ElTabPane key="1" :label="$t('abp.user.user')">
           <component :is="editRow.id ? EditForm : AddForm" />
         </ElTabPane>
         <ElTabPane key="2" :label="$t('abp.role.role')">
-          <ElCheckboxGroup v-model="checkedRoles" :options="rolesList" name="checkboxgroup">
-            <ElCheckbox v-for="item in rolesList" :label="item.value" :key="item.value"></ElCheckbox>
+          <ElCheckboxGroup
+            v-model="checkedRoles"
+            :options="rolesList"
+            name="checkboxgroup"
+          >
+            <ElCheckbox
+              v-for="item in rolesList"
+              :key="item.value"
+              :label="item.value"
+            />
           </ElCheckboxGroup>
         </ElTabPane>
       </ElTabs>

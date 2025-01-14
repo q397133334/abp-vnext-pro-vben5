@@ -78,13 +78,14 @@ const formSchema = computed((): VbenFormSchema[] => {
         .min(1, { message: $t('authentication.passwordTip') })
         .default('1q2w3E*'),
     },
-    // {
-    //   component: markRaw(SliderCaptcha),
-    //   fieldName: 'captcha',
-    //   rules: z.boolean().refine((value) => value, {
-    //     message: $t('authentication.verifyRequiredTip'),
-    //   }),
-    // },
+    {
+      component: 'VbenInput',
+      componentProps: {
+        placeholder: $t('abp.login.inputCode'),
+      },
+      fieldName: 'code',
+      label: $t('abp.user.code'),
+    },
   ];
 });
 </script>

@@ -6,19 +6,6 @@ import { ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-// import {
-//   Button,
-//   CheckboxGroup,
-//   Dropdown,
-//   Menu,
-//   MenuItem,
-//   message as Message,
-//   Modal,
-//   Space,
-//   TabPane,
-//   Tabs,
-//   Tag,
-// } from 'ant-design-vue';
 import {
   NButton as Button,
   NCheckbox as Checkbox,
@@ -38,6 +25,7 @@ import {
   postUsersDelete,
   postUsersLock,
   postUsersPage,
+  postUsersResetTwoFactor,
   postUsersRole,
   postUsersUpdate,
 } from '#/api-client';
@@ -191,7 +179,11 @@ function onDel(row: any) {
     },
   });
 }
-
+async function resetTwoFactor(row: any) {
+  await postUsersResetTwoFactor({ body: { userId: row.id } });
+  gridApi.reload();
+  Message.success($t('abp.user.resetTwoFactor') + $t('common.success'));
+}
 const onLock = async (row: Record<string, any>) => {
   let message = $t('common.confirmDisable');
   if (!row.isActive) {
@@ -282,6 +274,12 @@ const exportData = async () => {
         </Tag>
         <Tag v-else type="error"> {{ $t('common.disabled') }} </Tag>
       </template>
+      <template #twoFactorEnabled="{ row }">
+        <Tag v-if="row.twoFactorEnabled" type="success">
+          {{ $t('common.enabled') }}
+        </Tag>
+        <Tag v-else type="error"> {{ $t('common.disabled') }} </Tag>
+      </template>
       <template #action="{ row }">
         <Space>
           <Button
@@ -308,6 +306,14 @@ const exportData = async () => {
             @click="onDel(row)"
           >
             {{ $t('common.delete') }}
+          </Button>
+          <Button
+            size="small"
+            type="error"
+            v-access:code="'AbpIdentity.Users.ResetTwoFactor'"
+            @click="resetTwoFactor(row)"
+          >
+            {{ $t('abp.user.resetTwoFactor') }}
           </Button>
         </Space>
       </template>
