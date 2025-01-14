@@ -10,7 +10,7 @@ const routes: RouteRecordRaw[] = [
       icon: 'ant-design:tool-outlined',
       // order: 998,
       title: $t('textTemplate.templateManagement'),
-      authority: ['AbpProTemplate'],
+      authority: ['AbpTemplateManagement'],
     },
     name: 'TextTemplate',
     path: '/TextTemplate',
@@ -22,7 +22,7 @@ const routes: RouteRecordRaw[] = [
         meta: {
           icon: 'ant-design:file-markdown-filled',
           title: $t('textTemplate.templateList'),
-          authority: ['AbpProTemplate.TemplateManagement'],
+          authority: ['AbpTemplateManagement.Template'],
         },
       },
     ],
