@@ -370,15 +370,6 @@ export const ApplicationSettingConfigurationDtoSchema = {
     additionalProperties: false
 } as const;
 
-export const BookTypeSchema = {
-    enum: [10, 20, 30],
-    type: 'integer',
-    description: '类型',
-    format: 'int32',
-    'x-enumNames': ['History', 'Story', 'Other'],
-    'x-enum-varnames': ['History', 'Story', 'Other']
-} as const;
-
 export const ChangePasswordInputSchema = {
     required: ['newPassword'],
     type: 'object',
@@ -412,6 +403,7 @@ export const ClockDtoSchema = {
 export const ControlTypeSchema = {
     enum: [10, 20, 30, 40],
     type: 'integer',
+    description: '控制策略',
     format: 'int32',
     'x-enumNames': ['Aggregate', 'Entity', 'Enum', 'Global'],
     'x-enum-varnames': ['Aggregate', 'Entity', 'Enum', 'Global']
@@ -491,10 +483,12 @@ export const CopyTemplateInputSchema = {
         },
         name: {
             type: 'string',
+            description: '名称',
             nullable: true
         },
         remark: {
             type: 'string',
+            description: '备注',
             nullable: true
         }
     },
@@ -511,46 +505,16 @@ export const CreateAggregateInputSchema = {
         },
         code: {
             minLength: 1,
-            type: 'string'
+            type: 'string',
+            description: '编码'
         },
         description: {
             minLength: 1,
-            type: 'string'
+            type: 'string',
+            description: '描述'
         }
     },
     additionalProperties: false
-} as const;
-
-export const CreateBookInputSchema = {
-    required: ['name', 'no', 'price'],
-    type: 'object',
-    properties: {
-        no: {
-            minLength: 1,
-            type: 'string',
-            description: '编号'
-        },
-        name: {
-            minLength: 1,
-            type: 'string',
-            description: '名称'
-        },
-        price: {
-            type: 'number',
-            description: '价格',
-            format: 'double'
-        },
-        remark: {
-            type: 'string',
-            description: '备注',
-            nullable: true
-        },
-        bookType: {
-            '$ref': '#/components/schemas/BookType'
-        }
-    },
-    additionalProperties: false,
-    description: '创建书籍'
 } as const;
 
 export const CreateDataDictinaryDetailInputSchema = {
@@ -609,11 +573,13 @@ export const CreateEntityModelInputSchema = {
         },
         code: {
             minLength: 1,
-            type: 'string'
+            type: 'string',
+            description: '编码'
         },
         description: {
             minLength: 1,
-            type: 'string'
+            type: 'string',
+            description: '描述'
         },
         relationalType: {
             '$ref': '#/components/schemas/RelationalType'
@@ -628,57 +594,70 @@ export const CreateEntityModelPropertyInputSchema = {
     properties: {
         id: {
             type: 'string',
+            description: '实体模型Id',
             format: 'uuid'
         },
         code: {
             minLength: 1,
-            type: 'string'
+            type: 'string',
+            description: '编码'
         },
         description: {
             minLength: 1,
-            type: 'string'
+            type: 'string',
+            description: '描述'
         },
         isRequired: {
-            type: 'boolean'
+            type: 'boolean',
+            description: '必填'
         },
         maxLength: {
             type: 'integer',
+            description: '字符串最大长度',
             format: 'int32',
             nullable: true
         },
         minLength: {
             type: 'integer',
+            description: '字符串最小长度',
             format: 'int32',
             nullable: true
         },
         decimalPrecision: {
             type: 'integer',
+            description: '当类型为decimal时的小数位数 (18,4) 中的18',
             format: 'int32',
             nullable: true
         },
         decimalScale: {
             type: 'integer',
+            description: '当类型为decimal时的字段长度 (18,4) 中的4',
             format: 'int32',
             nullable: true
         },
         enumTypeId: {
             type: 'string',
+            description: '枚举类型Id',
             format: 'uuid',
             nullable: true
         },
         dataTypeId: {
             type: 'string',
+            description: '数据类型Id',
             format: 'uuid',
             nullable: true
         },
         allowSearch: {
-            type: 'boolean'
+            type: 'boolean',
+            description: '允许作为查询条件'
         },
         allowAdd: {
-            type: 'boolean'
+            type: 'boolean',
+            description: '允许添加'
         },
         allowEdit: {
-            type: 'boolean'
+            type: 'boolean',
+            description: '允许编辑'
         }
     },
     additionalProperties: false
@@ -690,14 +669,17 @@ export const CreateEnumTypeInputSchema = {
     properties: {
         code: {
             minLength: 1,
-            type: 'string'
+            type: 'string',
+            description: '编码'
         },
         description: {
             minLength: 1,
-            type: 'string'
+            type: 'string',
+            description: '描述'
         },
         entityModelId: {
             type: 'string',
+            description: '实体模型Id',
             format: 'uuid'
         },
         projectId: {
@@ -714,19 +696,23 @@ export const CreateEnumTypePropertyInputSchema = {
     properties: {
         enumTypeId: {
             type: 'string',
+            description: 'Id',
             format: 'uuid'
         },
         code: {
             minLength: 1,
-            type: 'string'
+            type: 'string',
+            description: '编码'
         },
         value: {
             type: 'integer',
+            description: '枚举值',
             format: 'int32'
         },
         description: {
             minLength: 1,
-            type: 'string'
+            type: 'string',
+            description: '描述'
         }
     },
     additionalProperties: false
@@ -813,22 +799,27 @@ export const CreateProjectInputSchema = {
     properties: {
         owner: {
             type: 'string',
+            description: '负责人',
             nullable: true
         },
         companyName: {
             type: 'string',
+            description: '公司名称',
             nullable: true
         },
         projectName: {
             type: 'string',
+            description: '项目名称',
             nullable: true
         },
         remark: {
             type: 'string',
+            description: '备注',
             nullable: true
         },
         supportTenant: {
-            type: 'boolean'
+            type: 'boolean',
+            description: '是否支持多租户'
         }
     },
     additionalProperties: false
@@ -839,6 +830,7 @@ export const CreateTemplateDetailInputSchema = {
     properties: {
         templateId: {
             type: 'string',
+            description: '模板id',
             format: 'uuid'
         },
         parentId: {
@@ -854,14 +846,17 @@ export const CreateTemplateDetailInputSchema = {
         },
         name: {
             type: 'string',
+            description: '模板类型',
             nullable: true
         },
         description: {
             type: 'string',
+            description: '描述',
             nullable: true
         },
         content: {
             type: 'string',
+            description: '模板内容',
             nullable: true
         }
     },
@@ -873,10 +868,12 @@ export const CreateTemplateInputSchema = {
     properties: {
         name: {
             type: 'string',
+            description: '名称',
             nullable: true
         },
         remark: {
             type: 'string',
+            description: '备注',
             nullable: true
         }
     },
@@ -889,22 +886,27 @@ export const CreateTextTemplateInputSchema = {
     properties: {
         name: {
             minLength: 1,
-            type: 'string'
+            type: 'string',
+            description: '名称'
         },
         code: {
             minLength: 1,
-            type: 'string'
+            type: 'string',
+            description: '编码'
         },
         content: {
             minLength: 1,
-            type: 'string'
+            type: 'string',
+            description: '内容'
         },
         cultureName: {
             minLength: 1,
-            type: 'string'
+            type: 'string',
+            description: '语言'
         }
     },
-    additionalProperties: false
+    additionalProperties: false,
+    description: '创建模板'
 } as const;
 
 export const CurrentCultureDtoSchema = {
@@ -1051,14 +1053,17 @@ export const DataTypeDtoSchema = {
         },
         code: {
             type: 'string',
+            description: '编码',
             nullable: true
         },
         description: {
             type: 'string',
+            description: '描述',
             nullable: true
         },
         isEnum: {
-            type: 'boolean'
+            type: 'boolean',
+            description: '是否是枚举'
         }
     },
     additionalProperties: false
@@ -1108,19 +1113,6 @@ export const DeleteAggregateInputSchema = {
         }
     },
     additionalProperties: false
-} as const;
-
-export const DeleteBookInputSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string',
-            description: '书籍Id',
-            format: 'uuid'
-        }
-    },
-    additionalProperties: false,
-    description: '删除书籍'
 } as const;
 
 export const DeleteConnectionStringInputSchema = {
@@ -1190,6 +1182,7 @@ export const DeleteEnumTypeInputSchema = {
     properties: {
         id: {
             type: 'string',
+            description: 'Id',
             format: 'uuid'
         },
         entityModelId: {
@@ -1205,10 +1198,12 @@ export const DeleteEnumTypePropertyInputSchema = {
     properties: {
         enumTypeId: {
             type: 'string',
+            description: 'Id',
             format: 'uuid'
         },
         id: {
             type: 'string',
+            description: 'Id',
             format: 'uuid'
         }
     },
@@ -1285,7 +1280,22 @@ export const DeleteTextTemplateInputSchema = {
     properties: {
         id: {
             type: 'string',
+            description: '模板Id',
             format: 'uuid'
+        }
+    },
+    additionalProperties: false,
+    description: '删除模板'
+} as const;
+
+export const DisabledTwoFactorInputSchema = {
+    required: ['code'],
+    type: 'object',
+    properties: {
+        code: {
+            minLength: 1,
+            type: 'string',
+            description: '验证码'
         }
     },
     additionalProperties: false
@@ -1301,6 +1311,24 @@ export const DownCodeInputSchema = {
         projectId: {
             type: 'string',
             format: 'uuid'
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const EnabledTwoFactorInputSchema = {
+    required: ['code', 'secret'],
+    type: 'object',
+    properties: {
+        code: {
+            minLength: 1,
+            type: 'string',
+            description: '验证码'
+        },
+        secret: {
+            minLength: 1,
+            type: 'string',
+            description: '密钥'
         }
     },
     additionalProperties: false
@@ -2192,10 +2220,12 @@ export const GetDataTypeOutputSchema = {
         },
         code: {
             type: 'string',
+            description: '枚举编码',
             nullable: true
         },
         description: {
             type: 'string',
+            description: '枚举描述',
             nullable: true
         }
     },
@@ -2222,10 +2252,12 @@ export const GetEntityModelOutputSchema = {
         },
         code: {
             type: 'string',
+            description: '编码',
             nullable: true
         },
         description: {
             type: 'string',
+            description: '描述',
             nullable: true
         },
         relationalType: {
@@ -2236,6 +2268,7 @@ export const GetEntityModelOutputSchema = {
             items: {
                 '$ref': '#/components/schemas/GetEntityModelPropertyOutput'
             },
+            description: '实体模型属性集合',
             nullable: true
         },
         entityModelOutputs: {
@@ -2258,37 +2291,45 @@ export const GetEntityModelPropertyOutputSchema = {
         },
         code: {
             type: 'string',
+            description: '名称',
             nullable: true
         },
         description: {
             type: 'string',
+            description: '描述',
             nullable: true
         },
         isRequired: {
-            type: 'boolean'
+            type: 'boolean',
+            description: '必填'
         },
         maxLength: {
             type: 'integer',
+            description: '字符串最大长度',
             format: 'int32',
             nullable: true
         },
         minLength: {
             type: 'integer',
+            description: '字符串最小长度',
             format: 'int32',
             nullable: true
         },
         decimalPrecision: {
             type: 'integer',
+            description: '当类型为decimal时的小数位数 (18,4) 中的18',
             format: 'int32',
             nullable: true
         },
         decimalScale: {
             type: 'integer',
+            description: '当类型为decimal时的字段长度 (18,4) 中的4',
             format: 'int32',
             nullable: true
         },
         enumTypeId: {
             type: 'string',
+            description: '枚举类型Id',
             format: 'uuid',
             nullable: true
         },
@@ -2300,6 +2341,7 @@ export const GetEntityModelPropertyOutputSchema = {
         },
         dataTypeId: {
             type: 'string',
+            description: '数据类型Id',
             format: 'uuid',
             nullable: true
         },
@@ -2308,6 +2350,7 @@ export const GetEntityModelPropertyOutputSchema = {
         },
         entityModelId: {
             type: 'string',
+            description: '实体模型Id',
             format: 'uuid'
         }
     },
@@ -2330,27 +2373,33 @@ export const GetEntityModelTreeOutputSchema = {
     properties: {
         key: {
             type: 'string',
+            description: '模板id',
             format: 'uuid'
         },
         icon: {
             type: 'string',
+            description: '图标',
             nullable: true
         },
         code: {
             type: 'string',
+            description: '描述',
             nullable: true
         },
         title: {
             type: 'string',
+            description: '描述',
             nullable: true
         },
         parentId: {
             type: 'string',
+            description: '父类Id',
             format: 'uuid',
             nullable: true
         },
         description: {
             type: 'string',
+            description: '描述',
             nullable: true
         },
         relationalType: {
@@ -2376,10 +2425,12 @@ export const GetEnumTypeOutputSchema = {
         },
         code: {
             type: 'string',
+            description: '枚举编码',
             nullable: true
         },
         description: {
             type: 'string',
+            description: '枚举描述',
             nullable: true
         }
     },
@@ -2558,11 +2609,30 @@ export const GetPermissionInputSchema = {
     additionalProperties: false
 } as const;
 
+export const GetQRCodeOutputSchema = {
+    type: 'object',
+    properties: {
+        qrCode: {
+            type: 'string',
+            description: 'base64 二维码',
+            format: 'byte',
+            nullable: true
+        },
+        secret: {
+            type: 'string',
+            description: '密钥',
+            nullable: true
+        }
+    },
+    additionalProperties: false
+} as const;
+
 export const GetTemplateTreeOutputSchema = {
     type: 'object',
     properties: {
         key: {
             type: 'string',
+            description: '模板id',
             format: 'uuid'
         },
         templateType: {
@@ -2573,22 +2643,27 @@ export const GetTemplateTreeOutputSchema = {
         },
         icon: {
             type: 'string',
+            description: '图标',
             nullable: true
         },
         name: {
             type: 'string',
+            description: '模板名称',
             nullable: true
         },
         description: {
             type: 'string',
+            description: '描述',
             nullable: true
         },
         title: {
             type: 'string',
+            description: '描述',
             nullable: true
         },
         content: {
             type: 'string',
+            description: '模板内容',
             nullable: true
         },
         children: {
@@ -3105,24 +3180,6 @@ export const IdentityUserDtoSchema = {
     additionalProperties: false
 } as const;
 
-export const IdentityUserDtoPagedResultDtoSchema = {
-    type: 'object',
-    properties: {
-        items: {
-            type: 'array',
-            items: {
-                '$ref': '#/components/schemas/IdentityUserDto'
-            },
-            nullable: true
-        },
-        totalCount: {
-            type: 'integer',
-            format: 'int64'
-        }
-    },
-    additionalProperties: false
-} as const;
-
 export const IdentityUserUpdateDtoSchema = {
     required: ['email', 'userName'],
     type: 'object',
@@ -3261,6 +3318,29 @@ export const LockUserInputSchema = {
         }
     },
     additionalProperties: false
+} as const;
+
+export const Login2FAInputSchema = {
+    type: 'object',
+    properties: {
+        name: {
+            type: 'string',
+            description: '用户名或者邮箱',
+            nullable: true
+        },
+        password: {
+            type: 'string',
+            description: '密码',
+            nullable: true
+        },
+        code: {
+            type: 'string',
+            description: '双因素验证码',
+            nullable: true
+        }
+    },
+    additionalProperties: false,
+    description: '登录'
 } as const;
 
 export const LoginInputSchema = {
@@ -3417,6 +3497,44 @@ export const MultiTenancyInfoDtoSchema = {
     additionalProperties: false
 } as const;
 
+export const MyProfileOutputSchema = {
+    type: 'object',
+    properties: {
+        tenantId: {
+            type: 'string',
+            format: 'uuid',
+            nullable: true
+        },
+        userName: {
+            type: 'string',
+            nullable: true
+        },
+        name: {
+            type: 'string',
+            nullable: true
+        },
+        surname: {
+            type: 'string',
+            nullable: true
+        },
+        email: {
+            type: 'string',
+            nullable: true
+        },
+        phoneNumber: {
+            type: 'string',
+            nullable: true
+        },
+        isActive: {
+            type: 'boolean'
+        },
+        twoFactorEnabled: {
+            type: 'boolean'
+        }
+    },
+    additionalProperties: false
+} as const;
+
 export const NameValueSchema = {
     type: 'object',
     properties: {
@@ -3448,106 +3566,6 @@ export const ObjectExtensionsDtoSchema = {
                 '$ref': '#/components/schemas/ExtensionEnumDto'
             },
             nullable: true
-        }
-    },
-    additionalProperties: false
-} as const;
-
-export const PageBookInputSchema = {
-    type: 'object',
-    properties: {
-        pageIndex: {
-            type: 'integer',
-            description: '当前页面.默认从1开始',
-            format: 'int32'
-        },
-        pageSize: {
-            type: 'integer',
-            description: '每页多少条.每页显示多少记录',
-            format: 'int32'
-        },
-        skipCount: {
-            type: 'integer',
-            description: '跳过多少条',
-            format: 'int32',
-            readOnly: true
-        },
-        startCreationTime: {
-            type: 'string',
-            description: '开始创建时间',
-            format: 'date-time',
-            nullable: true
-        },
-        endCreationTime: {
-            type: 'string',
-            description: '结束创建时间',
-            format: 'date-time',
-            nullable: true
-        }
-    },
-    additionalProperties: false,
-    description: '分页查询书籍'
-} as const;
-
-export const PageBookOutputSchema = {
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string',
-            description: '书籍Id',
-            format: 'uuid'
-        },
-        no: {
-            type: 'string',
-            description: '编号',
-            nullable: true
-        },
-        name: {
-            type: 'string',
-            description: '名称',
-            nullable: true
-        },
-        price: {
-            type: 'number',
-            description: '价格',
-            format: 'double'
-        },
-        remark: {
-            type: 'string',
-            description: '备注',
-            nullable: true
-        },
-        bookType: {
-            '$ref': '#/components/schemas/BookType'
-        },
-        bookTypeDescription: {
-            type: 'string',
-            nullable: true,
-            readOnly: true
-        },
-        creationTime: {
-            type: 'string',
-            description: '创建时间',
-            format: 'date-time'
-        }
-    },
-    additionalProperties: false,
-    description: '分页查询书籍'
-} as const;
-
-export const PageBookOutputPagedResultDtoSchema = {
-    type: 'object',
-    properties: {
-        items: {
-            type: 'array',
-            items: {
-                '$ref': '#/components/schemas/PageBookOutput'
-            },
-            nullable: true
-        },
-        totalCount: {
-            type: 'integer',
-            format: 'int64'
         }
     },
     additionalProperties: false
@@ -3594,36 +3612,44 @@ export const PageEntityModelPropertyOutputSchema = {
         },
         entityModelId: {
             type: 'string',
+            description: '实体模型Id',
             format: 'uuid'
         },
         code: {
             type: 'string',
+            description: '名称',
             nullable: true
         },
         description: {
             type: 'string',
+            description: '描述',
             nullable: true
         },
         isRequired: {
-            type: 'boolean'
+            type: 'boolean',
+            description: '必填'
         },
         maxLength: {
             type: 'integer',
+            description: '字符串最大长度',
             format: 'int32',
             nullable: true
         },
         minLength: {
             type: 'integer',
+            description: '字符串最小长度',
             format: 'int32',
             nullable: true
         },
         decimalPrecision: {
             type: 'integer',
+            description: '当类型为decimal时的小数位数 (18,4) 中的18',
             format: 'int32',
             nullable: true
         },
         decimalScale: {
             type: 'integer',
+            description: '当类型为decimal时的字段长度 (18,4) 中的4',
             format: 'int32',
             nullable: true
         },
@@ -3643,13 +3669,16 @@ export const PageEntityModelPropertyOutputSchema = {
             nullable: true
         },
         allowSearch: {
-            type: 'boolean'
+            type: 'boolean',
+            description: '允许作为查询条件'
         },
         allowAdd: {
-            type: 'boolean'
+            type: 'boolean',
+            description: '允许添加'
         },
         allowEdit: {
-            type: 'boolean'
+            type: 'boolean',
+            description: '允许编辑'
         }
     },
     additionalProperties: false
@@ -3714,14 +3743,17 @@ export const PageEnumTypeOutputSchema = {
         },
         entityModelId: {
             type: 'string',
+            description: '实体模型Id',
             format: 'uuid'
         },
         code: {
             type: 'string',
+            description: '名称',
             nullable: true
         },
         description: {
             type: 'string',
+            description: '描述',
             nullable: true
         },
         creationTime: {
@@ -3791,14 +3823,17 @@ export const PageEnumTypePropertyOutputSchema = {
         },
         code: {
             type: 'string',
+            description: '名称',
             nullable: true
         },
         value: {
             type: 'integer',
+            description: '名称',
             format: 'int32'
         },
         description: {
             type: 'string',
+            description: '描述',
             nullable: true
         },
         creationTime: {
@@ -3816,6 +3851,136 @@ export const PageEnumTypePropertyOutputPagedResultDtoSchema = {
             type: 'array',
             items: {
                 '$ref': '#/components/schemas/PageEnumTypePropertyOutput'
+            },
+            nullable: true
+        },
+        totalCount: {
+            type: 'integer',
+            format: 'int64'
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const PageIdentityUserOutputSchema = {
+    type: 'object',
+    properties: {
+        extraProperties: {
+            type: 'object',
+            additionalProperties: {},
+            nullable: true,
+            readOnly: true
+        },
+        id: {
+            type: 'string',
+            format: 'uuid'
+        },
+        creationTime: {
+            type: 'string',
+            format: 'date-time'
+        },
+        creatorId: {
+            type: 'string',
+            format: 'uuid',
+            nullable: true
+        },
+        lastModificationTime: {
+            type: 'string',
+            format: 'date-time',
+            nullable: true
+        },
+        lastModifierId: {
+            type: 'string',
+            format: 'uuid',
+            nullable: true
+        },
+        isDeleted: {
+            type: 'boolean'
+        },
+        deleterId: {
+            type: 'string',
+            format: 'uuid',
+            nullable: true
+        },
+        deletionTime: {
+            type: 'string',
+            format: 'date-time',
+            nullable: true
+        },
+        tenantId: {
+            type: 'string',
+            format: 'uuid',
+            nullable: true
+        },
+        userName: {
+            type: 'string',
+            nullable: true
+        },
+        name: {
+            type: 'string',
+            nullable: true
+        },
+        surname: {
+            type: 'string',
+            nullable: true
+        },
+        email: {
+            type: 'string',
+            nullable: true
+        },
+        emailConfirmed: {
+            type: 'boolean'
+        },
+        phoneNumber: {
+            type: 'string',
+            nullable: true
+        },
+        phoneNumberConfirmed: {
+            type: 'boolean'
+        },
+        isActive: {
+            type: 'boolean'
+        },
+        lockoutEnabled: {
+            type: 'boolean'
+        },
+        accessFailedCount: {
+            type: 'integer',
+            format: 'int32'
+        },
+        lockoutEnd: {
+            type: 'string',
+            format: 'date-time',
+            nullable: true
+        },
+        concurrencyStamp: {
+            type: 'string',
+            nullable: true
+        },
+        entityVersion: {
+            type: 'integer',
+            format: 'int32'
+        },
+        lastPasswordChangeTime: {
+            type: 'string',
+            format: 'date-time',
+            nullable: true
+        },
+        twoFactorEnabled: {
+            type: 'boolean',
+            description: '是否开启双因素验证码'
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const PageIdentityUserOutputPagedResultDtoSchema = {
+    type: 'object',
+    properties: {
+        items: {
+            type: 'array',
+            items: {
+                '$ref': '#/components/schemas/PageIdentityUserOutput'
             },
             nullable: true
         },
@@ -4136,28 +4301,34 @@ export const PageTextTemplateInputSchema = {
         },
         name: {
             type: 'string',
+            description: '名称',
             nullable: true
         },
         code: {
             type: 'string',
+            description: '编码',
             nullable: true
         },
         content: {
             type: 'string',
+            description: '内容',
             nullable: true
         },
         startCreationTime: {
             type: 'string',
+            description: '开始创建时间',
             format: 'date-time',
             nullable: true
         },
         endCreationTime: {
             type: 'string',
+            description: '结束创建时间',
             format: 'date-time',
             nullable: true
         }
     },
-    additionalProperties: false
+    additionalProperties: false,
+    description: '分页查询模板'
 } as const;
 
 export const PageTextTemplateOutputSchema = {
@@ -4165,30 +4336,37 @@ export const PageTextTemplateOutputSchema = {
     properties: {
         id: {
             type: 'string',
+            description: '模板Id',
             format: 'uuid'
         },
         name: {
             type: 'string',
+            description: '名称',
             nullable: true
         },
         code: {
             type: 'string',
+            description: '编码',
             nullable: true
         },
         content: {
             type: 'string',
+            description: '内容',
             nullable: true
         },
         cultureName: {
             type: 'string',
+            description: '语言',
             nullable: true
         },
         creationTime: {
             type: 'string',
+            description: '创建时间',
             format: 'date-time'
         }
     },
-    additionalProperties: false
+    additionalProperties: false,
+    description: '分页查询模板'
 } as const;
 
 export const PageTextTemplateOutputPagedResultDtoSchema = {
@@ -5430,26 +5608,32 @@ export const ProjectDtoSchema = {
         },
         owner: {
             type: 'string',
+            description: '负责人',
             nullable: true
         },
         nameSpace: {
             type: 'string',
+            description: '名称空间',
             nullable: true
         },
         companyName: {
             type: 'string',
+            description: '公司名称',
             nullable: true
         },
         projectName: {
             type: 'string',
+            description: '项目名称',
             nullable: true
         },
         remark: {
             type: 'string',
+            description: '备注',
             nullable: true
         },
         supportTenant: {
-            type: 'boolean'
+            type: 'boolean',
+            description: '是否支持多租户'
         }
     },
     additionalProperties: false
@@ -5611,6 +5795,17 @@ export const RemoveUserToOrganizationUnitInputSchema = {
             format: 'uuid'
         },
         organizationUnitId: {
+            type: 'string',
+            format: 'uuid'
+        }
+    },
+    additionalProperties: false
+} as const;
+
+export const ResetTwoFactorInputSchema = {
+    type: 'object',
+    properties: {
+        userId: {
             type: 'string',
             format: 'uuid'
         }
@@ -5819,6 +6014,7 @@ export const TemplateDetailDtoSchema = {
         },
         templateId: {
             type: 'string',
+            description: '模板id',
             format: 'uuid'
         },
         templateType: {
@@ -5829,23 +6025,28 @@ export const TemplateDetailDtoSchema = {
         },
         parentId: {
             type: 'string',
+            description: '父级id',
             format: 'uuid',
             nullable: true
         },
         name: {
             type: 'string',
+            description: '模板名称',
             nullable: true
         },
         description: {
             type: 'string',
+            description: '描述',
             nullable: true
         },
         content: {
             type: 'string',
+            description: '模板内容',
             nullable: true
         }
     },
-    additionalProperties: false
+    additionalProperties: false,
+    description: '模板明细'
 } as const;
 
 export const TemplateDtoSchema = {
@@ -5881,10 +6082,12 @@ export const TemplateDtoSchema = {
         },
         name: {
             type: 'string',
+            description: '名称',
             nullable: true
         },
         remark: {
             type: 'string',
+            description: '备注',
             nullable: true
         },
         templateDetails: {
@@ -5892,10 +6095,12 @@ export const TemplateDtoSchema = {
             items: {
                 '$ref': '#/components/schemas/TemplateDetailDto'
             },
+            description: '关联属性1:N 模板明细集合',
             nullable: true
         }
     },
-    additionalProperties: false
+    additionalProperties: false,
+    description: '模板'
 } as const;
 
 export const TemplateDtoPagedResultDtoSchema = {
@@ -5921,6 +6126,7 @@ export const TemplateTreeDtoSchema = {
     properties: {
         key: {
             type: 'string',
+            description: '模板id',
             format: 'uuid'
         },
         templateType: {
@@ -5931,25 +6137,31 @@ export const TemplateTreeDtoSchema = {
         },
         icon: {
             type: 'string',
+            description: '图标',
             nullable: true
         },
         isFolder: {
-            type: 'boolean'
+            type: 'boolean',
+            description: '是否是文件夹'
         },
         name: {
             type: 'string',
+            description: '模板名称',
             nullable: true
         },
         description: {
             type: 'string',
+            description: '描述',
             nullable: true
         },
         title: {
             type: 'string',
+            description: '描述',
             nullable: true
         },
         content: {
             type: 'string',
+            description: '模板内容',
             nullable: true
         },
         children: {
@@ -6139,51 +6351,16 @@ export const UpdateAggregateInputSchema = {
         },
         code: {
             minLength: 1,
-            type: 'string'
+            type: 'string',
+            description: '编码'
         },
         description: {
             minLength: 1,
-            type: 'string'
+            type: 'string',
+            description: '描述'
         }
     },
     additionalProperties: false
-} as const;
-
-export const UpdateBookInputSchema = {
-    required: ['name', 'no', 'price'],
-    type: 'object',
-    properties: {
-        id: {
-            type: 'string',
-            description: '书籍Id',
-            format: 'uuid'
-        },
-        no: {
-            minLength: 1,
-            type: 'string',
-            description: '编号'
-        },
-        name: {
-            minLength: 1,
-            type: 'string',
-            description: '名称'
-        },
-        price: {
-            type: 'number',
-            description: '价格',
-            format: 'double'
-        },
-        remark: {
-            type: 'string',
-            description: '备注',
-            nullable: true
-        },
-        bookType: {
-            '$ref': '#/components/schemas/BookType'
-        }
-    },
-    additionalProperties: false,
-    description: '更新书籍'
 } as const;
 
 export const UpdateDataDictinaryInputSchema = {
@@ -6246,11 +6423,13 @@ export const UpdateEntityModelInputSchema = {
         },
         code: {
             minLength: 1,
-            type: 'string'
+            type: 'string',
+            description: '编码'
         },
         description: {
             minLength: 1,
-            type: 'string'
+            type: 'string',
+            description: '描述'
         },
         relationalType: {
             '$ref': '#/components/schemas/RelationalType'
@@ -6273,57 +6452,70 @@ export const UpdateEntityModelPropertyInputSchema = {
         },
         code: {
             minLength: 1,
-            type: 'string'
+            type: 'string',
+            description: '编码'
         },
         description: {
             minLength: 1,
-            type: 'string'
+            type: 'string',
+            description: '描述'
         },
         isRequired: {
-            type: 'boolean'
+            type: 'boolean',
+            description: '必填'
         },
         maxLength: {
             type: 'integer',
+            description: '字符串最大长度',
             format: 'int32',
             nullable: true
         },
         minLength: {
             type: 'integer',
+            description: '字符串最小长度',
             format: 'int32',
             nullable: true
         },
         decimalPrecision: {
             type: 'integer',
+            description: '当类型为decimal时的小数位数 (18,4) 中的18',
             format: 'int32',
             nullable: true
         },
         decimalScale: {
             type: 'integer',
+            description: '当类型为decimal时的字段长度 (18,4) 中的4',
             format: 'int32',
             nullable: true
         },
         enumTypeId: {
             type: 'string',
+            description: '枚举类型Id',
             format: 'uuid',
             nullable: true
         },
         dataTypeId: {
             type: 'string',
+            description: '数据类型Id',
             format: 'uuid',
             nullable: true
         },
         entityModelId: {
             type: 'string',
+            description: '实体模型Id',
             format: 'uuid'
         },
         allowSearch: {
-            type: 'boolean'
+            type: 'boolean',
+            description: '允许作为查询条件'
         },
         allowAdd: {
-            type: 'boolean'
+            type: 'boolean',
+            description: '允许添加'
         },
         allowEdit: {
-            type: 'boolean'
+            type: 'boolean',
+            description: '允许编辑'
         }
     },
     additionalProperties: false
@@ -6339,11 +6531,13 @@ export const UpdateEnumTypeInputSchema = {
         },
         code: {
             minLength: 1,
-            type: 'string'
+            type: 'string',
+            description: '编码'
         },
         description: {
             minLength: 1,
-            type: 'string'
+            type: 'string',
+            description: '描述'
         }
     },
     additionalProperties: false
@@ -6355,23 +6549,28 @@ export const UpdateEnumTypePropertyInputSchema = {
     properties: {
         enumTypeId: {
             type: 'string',
+            description: 'Id',
             format: 'uuid'
         },
         id: {
             type: 'string',
+            description: 'Id',
             format: 'uuid'
         },
         code: {
             minLength: 1,
-            type: 'string'
+            type: 'string',
+            description: '编码'
         },
         value: {
             type: 'integer',
+            description: '枚举值',
             format: 'int32'
         },
         description: {
             minLength: 1,
-            type: 'string'
+            type: 'string',
+            description: '描述'
         }
     },
     additionalProperties: false
@@ -6542,22 +6741,27 @@ export const UpdateProjectInputSchema = {
         },
         owner: {
             type: 'string',
+            description: '负责人',
             nullable: true
         },
         companyName: {
             type: 'string',
+            description: '公司名称',
             nullable: true
         },
         projectName: {
             type: 'string',
+            description: '项目名称',
             nullable: true
         },
         remark: {
             type: 'string',
+            description: '备注',
             nullable: true
         },
         supportTenant: {
-            type: 'boolean'
+            type: 'boolean',
+            description: '是否支持多租户'
         }
     },
     additionalProperties: false
@@ -6615,6 +6819,7 @@ export const UpdateTemplateDetailContentInputSchema = {
     properties: {
         templateId: {
             type: 'string',
+            description: '模板id',
             format: 'uuid'
         },
         templateDetailId: {
@@ -6623,6 +6828,7 @@ export const UpdateTemplateDetailContentInputSchema = {
         },
         content: {
             type: 'string',
+            description: '模板内容',
             nullable: true
         }
     },
@@ -6634,6 +6840,7 @@ export const UpdateTemplateDetailInputSchema = {
     properties: {
         templateId: {
             type: 'string',
+            description: '模板id',
             format: 'uuid'
         },
         templateDetailId: {
@@ -6645,14 +6852,17 @@ export const UpdateTemplateDetailInputSchema = {
         },
         name: {
             type: 'string',
+            description: '模板类型',
             nullable: true
         },
         description: {
             type: 'string',
+            description: '描述',
             nullable: true
         },
         content: {
             type: 'string',
+            description: '模板内容',
             nullable: true
         }
     },
@@ -6668,10 +6878,12 @@ export const UpdateTemplateInputSchema = {
         },
         name: {
             type: 'string',
+            description: '名称',
             nullable: true
         },
         remark: {
             type: 'string',
+            description: '备注',
             nullable: true
         }
     },
@@ -6699,26 +6911,32 @@ export const UpdateTextTemplateInputSchema = {
     properties: {
         id: {
             type: 'string',
+            description: '模板Id',
             format: 'uuid'
         },
         name: {
             minLength: 1,
-            type: 'string'
+            type: 'string',
+            description: '名称'
         },
         code: {
             minLength: 1,
-            type: 'string'
+            type: 'string',
+            description: '编码'
         },
         content: {
             minLength: 1,
-            type: 'string'
+            type: 'string',
+            description: '内容'
         },
         cultureName: {
             minLength: 1,
-            type: 'string'
+            type: 'string',
+            description: '语言'
         }
     },
-    additionalProperties: false
+    additionalProperties: false,
+    description: '更新模板'
 } as const;
 
 export const UpdateUserInputSchema = {
