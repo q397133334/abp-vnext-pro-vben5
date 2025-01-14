@@ -1,20 +1,18 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+
 import { Page, type VbenFormProps } from '@vben/common-ui';
 import { useVbenModal } from '@vben/common-ui';
+
 import {
   ElButton as Button,
   ElCol as Col,
-  ElRow as Row,
-  ElDropdown as Dropdown,
-  ElDropdownMenu as Menu,
-  ElDropdownItem as MenuItem,
-  ElSpace as Space,
-  ElSwitch as Switch,
-  ElMessageBox,
   ElMessage,
-  ElText,
+  ElMessageBox,
+  ElRow as Row,
+  ElSwitch as Switch,
 } from 'element-plus';
+
 import { useVbenVxeGrid, type VxeGridProps } from '#/adapter/vxe-table';
 import {
   postDataDictionaryDelete,
@@ -23,6 +21,7 @@ import {
   postDataDictionaryPageDetail,
   postDataDictionaryStatus,
 } from '#/api-client/index';
+import { TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 
 import DataDictionaryDetail from './DataDictionaryDetailModal.vue';
@@ -122,12 +121,9 @@ const editDataDictionary = (row: Record<string, any>) => {
 };
 
 const deleteDataDictionary = async (row: Record<string, any>) => {
-  ElMessageBox.confirm(
-    `${$t('common.confirmDelete')}${row.displayText} ?`,
-    {
-      type: 'warning',
-    }
-  ).then(async () => {
+  ElMessageBox.confirm(`${$t('common.confirmDelete')}${row.displayText} ?`, {
+    type: 'warning',
+  }).then(async () => {
     await postDataDictionaryDeleteDataDictionaryType({
       body: { id: row.id },
     });
@@ -135,8 +131,8 @@ const deleteDataDictionary = async (row: Record<string, any>) => {
     ElMessage({
       type: 'success',
       message: $t('common.deleteSuccess'),
-    })
-  })
+    });
+  });
 };
 
 const current = ref<Record<string, any>>({});
@@ -267,13 +263,9 @@ const editDetailRow = (row: Record<string, any>) => {
 };
 
 const removeDetailRow = async (row: Record<string, any>) => {
-
-  ElMessageBox.confirm(
-    `${$t('common.confirmDelete')}${row.displayText} ?`,
-    {
-      type: 'warning',
-    }
-  ).then(async () => {
+  ElMessageBox.confirm(`${$t('common.confirmDelete')}${row.displayText} ?`, {
+    type: 'warning',
+  }).then(async () => {
     await postDataDictionaryDelete({
       body: {
         dataDictionaryId: current.value?.row?.id,
@@ -283,9 +275,9 @@ const removeDetailRow = async (row: Record<string, any>) => {
     ElMessage({
       type: 'success',
       message: $t('common.deleteSuccess'),
-    })
+    });
     gridTableApi.reload();
-  })
+  });
 };
 
 /** ============>右侧表格相关逻辑 end ============== */
@@ -295,59 +287,75 @@ const removeDetailRow = async (row: Record<string, any>) => {
   <Page>
     <Row :gutter="16">
       <Col :span="8">
-      <Grid>
-        <template #toolbar-actions>
-          <Button type="primary" @click="openDataDictionaryModal">
-            {{ $t('common.add') }}
-          </Button>
-        </template>
+        <Grid>
+          <template #toolbar-actions>
+            <Button type="primary" @click="openDataDictionaryModal">
+              {{ $t('common.add') }}
+            </Button>
+          </template>
 
-        <template #codeName="{ row }">
-          <div>{{ `${row.code}|${row.displayText}` }}</div>
-        </template>
+          <template #codeName="{ row }">
+            <div>{{ `${row.code}|${row.displayText}` }}</div>
+          </template>
 
-        <template #action="{ row }">
-          <Space>
-            <Dropdown>
-              <Button size="small">......</Button>
-              <template #dropdown>
-                <Menu>
-                  <MenuItem @click="editDataDictionary(row)">
-                  <ElText type="primary">{{ $t('common.edit') }}</ElText>
-                  </MenuItem>
-                  <MenuItem @click="deleteDataDictionary(row)">
-                  <ElText type="danger">{{ $t('common.delete') }}</ElText>
-                  </MenuItem>
-                </Menu>
-              </template>
-            </Dropdown>
-          </Space>
-        </template>
-      </Grid>
+          <template #action="{ row }">
+            <TableAction
+              :actions="[
+                {
+                  label: $t('common.edit'),
+                  size: 'small',
+                  link: true,
+                  onClick: editDataDictionary.bind(null, row),
+                },
+                {
+                  label: $t('common.delete'),
+                  size: 'small',
+                  link: true,
+                  onClick: deleteDataDictionary.bind(null, row),
+                },
+              ]"
+            />
+          </template>
+        </Grid>
       </Col>
       <Col :span="16">
-      <GridTable>
-        <template #toolbar-actions>
-          <Button :disabled="!current.row" type="primary" @click="openDataDictionaryDetailModal">
-            {{ $t('common.add') }}
-          </Button>
-        </template>
-
-        <template #isEnabled="{ row }">
-          <Switch v-model="row.isEnabled" @change="handleItemStausChange($event, row)" />
-        </template>
-
-        <template #action="{ row }">
-          <Space>
-            <Button text type="primary" @click="editDetailRow(row)">
-              {{ $t('common.edit') }}
+        <GridTable>
+          <template #toolbar-actions>
+            <Button
+              :disabled="!current.row"
+              type="primary"
+              @click="openDataDictionaryDetailModal"
+            >
+              {{ $t('common.add') }}
             </Button>
-            <Button text type="danger" @click="removeDetailRow(row)">
-              {{ $t('common.delete') }}
-            </Button>
-          </Space>
-        </template>
-      </GridTable>
+          </template>
+
+          <template #isEnabled="{ row }">
+            <Switch
+              v-model="row.isEnabled"
+              @change="handleItemStausChange($event, row)"
+            />
+          </template>
+
+          <template #action="{ row }">
+            <TableAction
+              :actions="[
+                {
+                  label: $t('common.edit'),
+                  size: 'small',
+                  link: true,
+                  onClick: editDetailRow.bind(null, row),
+                },
+                {
+                  label: $t('common.delete'),
+                  size: 'small',
+                  link: true,
+                  onClick: removeDetailRow.bind(null, row),
+                },
+              ]"
+            />
+          </template>
+        </GridTable>
       </Col>
     </Row>
     <DataDictionaryModalComponent @reload="gridApi.reload" />

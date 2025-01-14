@@ -7,17 +7,10 @@ import { h, ref } from 'vue';
 import { Page, useVbenDrawer, useVbenModal } from '@vben/common-ui';
 
 import {
-  ElButton as Button,
-  ElDropdown,
-  ElDropdownItem,
-  ElDropdownMenu,
   ElMessage,
-  ElMessageBox,
   ElRadio,
   ElRadioGroup,
-  ElSpace,
   ElTag,
-  ElText,
   ElTree as Tree,
 } from 'element-plus';
 
@@ -31,6 +24,7 @@ import {
   postRolesPage,
   postRolesUpdate,
 } from '#/api-client';
+import { TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 
 import { addRoleFormSchema, querySchema, tableSchema } from './schema';
@@ -152,16 +146,12 @@ function onEdit(record: any) {
   addRoleFormApi.setValues({ ...record, isDefault: record.isDefault ? 1 : 0 });
 }
 
-function onDel(row: any) {
-  ElMessageBox.confirm(`${$t('common.confirmDelete')}${row.name} ?`, {
-    type: 'warning',
-  }).then(async () => {
-    await postRolesDelete({ body: { id: row.id } });
-    gridApi.reload();
-    ElMessage({
-      type: 'success',
-      message: $t('common.deleteSuccess'),
-    });
+async function onDel(row: any) {
+  await postRolesDelete({ body: { id: row.id } });
+  gridApi.reload();
+  ElMessage({
+    type: 'success',
+    message: $t('common.deleteSuccess'),
   });
 }
 
@@ -258,15 +248,17 @@ const updateAuth = async () => {
   <Page auto-content-height>
     <Grid>
       <template #toolbar-actions>
-        <ElSpace>
-          <Button
-            type="primary"
-            v-access:code="'AbpIdentity.Roles.Create'"
-            @click="addModalApi.open"
-          >
-            {{ $t('common.add') }}
-          </Button>
-        </ElSpace>
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.add'),
+              type: 'primary',
+              icon: 'ant-design:plus-outlined',
+              onClick: addModalApi.open.bind(null),
+              auth: ['AbpIdentity.Roles.Create'],
+            },
+          ]"
+        />
       </template>
 
       <template #isDefault="{ row }">
@@ -282,37 +274,37 @@ const updateAuth = async () => {
       </template>
 
       <template #action="{ row }">
-        <ElSpace>
-          <Button
-            size="small"
-            type="primary"
-            v-access:code="'AbpIdentity.Roles.Update'"
-            @click="onEdit(row)"
-          >
-            {{ $t('common.edit') }}
-          </Button>
-          <ElDropdown>
-            <Button size="small">......</Button>
-            <template #dropdown>
-              <ElDropdownMenu>
-                <ElDropdownItem
-                  v-access:code="'AbpIdentity.Roles.ManagePermissions'"
-                  @click="onAuth(row)"
-                >
-                  <ElText type="primary">
-                    {{ $t('abp.role.permissions') }}
-                  </ElText>
-                </ElDropdownItem>
-                <ElDropdownItem
-                  v-access:code="'AbpIdentity.Roles.Delete'"
-                  @click="onDel(row)"
-                >
-                  <ElText type="danger">{{ $t('common.delete') }}</ElText>
-                </ElDropdownItem>
-              </ElDropdownMenu>
-            </template>
-          </ElDropdown>
-        </ElSpace>
+        <TableAction
+          :actions="[
+            {
+              label: $t('abp.role.permissions'),
+              type: 'primary',
+              link: true,
+              size: 'small',
+              auth: ['AbpIdentity.Roles.ManagePermissions'],
+              onClick: onAuth.bind(null, row),
+            },
+          ]"
+          :drop-down-actions="[
+            {
+              label: $t('common.edit'),
+              size: 'small',
+              icon: 'ant-design:edit-outlined',
+              auth: ['AbpIdentity.Roles.Update'],
+              onClick: onEdit.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              icon: 'ant-design:delete-outlined',
+              type: 'primary',
+              auth: ['AbpIdentity.Roles.Delete'],
+              popConfirm: {
+                title: $t('common.askConfirmDelete'),
+                confirm: onDel.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
 
