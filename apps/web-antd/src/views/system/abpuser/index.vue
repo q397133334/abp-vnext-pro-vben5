@@ -7,14 +7,9 @@ import { h, ref } from 'vue';
 import { Page, useVbenModal } from '@vben/common-ui';
 
 import {
-  Button,
   CheckboxGroup,
-  Dropdown,
-  Menu,
-  MenuItem,
   message as Message,
   Modal,
-  Space,
   TabPane,
   Tabs,
   Tag,
@@ -33,6 +28,7 @@ import {
   postUsersUpdate,
 } from '#/api-client';
 import fileRequest from '#/api-client-config/index-blob';
+import { TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 
 import {
@@ -49,7 +45,8 @@ defineOptions({
 const formOptions: VbenFormProps = {
   schema: querySchema,
 };
-
+const rolesList = ref([] as any);
+const checkedRoles = ref([]);
 const gridOptions: VxeGridProps<any> = {
   checkboxConfig: {
     highlight: true,
@@ -196,8 +193,6 @@ const onLock = async (row: Record<string, any>) => {
   gridApi.reload();
 };
 
-const rolesList = ref([] as any);
-const checkedRoles = ref([]);
 const openAddModal = async () => {
   editRow.value = {};
   checkedRoles.value = [];
@@ -244,22 +239,24 @@ const exportData = async () => {
   <Page auto-content-height>
     <Grid>
       <template #toolbar-actions>
-        <Space>
-          <Button
-            type="primary"
-            v-access:code="'AbpIdentity.Users.Create'"
-            @click="openAddModal"
-          >
-            {{ $t('common.add') }}
-          </Button>
-          <Button
-            type="primary"
-            v-access:code="'AbpIdentity.Users.Export'"
-            @click="exportData"
-          >
-            {{ $t('common.export') }}
-          </Button>
-        </Space>
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.add'),
+              type: 'primary',
+              icon: 'ant-design:plus-outlined',
+              onClick: openAddModal.bind(null),
+              auth: ['AbpIdentity.Users.Create'],
+            },
+            {
+              label: $t('common.export'),
+              type: 'primary',
+              icon: 'ant-design:download-outlined',
+              onClick: exportData.bind(null),
+              auth: ['AbpIdentity.Users.Export'],
+            },
+          ]"
+        />
       </template>
 
       <template #isActive="{ row }">
@@ -287,56 +284,45 @@ const exportData = async () => {
         />
       </template>
       <template #action="{ row }">
-        <Space>
-          <Button
-            size="small"
-            type="primary"
-            v-access:code="'AbpIdentity.Users.Update'"
-            @click="onEdit(row)"
-          >
-            {{ $t('common.edit') }}
-          </Button>
-          <Dropdown>
-            <Button size="small"> ...... </Button>
-            <template #overlay>
-              <Menu>
-                <MenuItem @click="onLock(row)">
-                  <Button
-                    size="small"
-                    type="link"
-                    v-access:code="'AbpIdentity.Users.Enable'"
-                  >
-                    {{
-                      row.isActive
-                        ? $t('common.disabled')
-                        : $t('common.enabled')
-                    }}
-                  </Button>
-                </MenuItem>
-                <MenuItem @click="onDel(row)">
-                  <Button
-                    danger
-                    size="small"
-                    type="link"
-                    v-access:code="'AbpIdentity.Users.Delete'"
-                  >
-                    {{ $t('common.delete') }}
-                  </Button>
-                </MenuItem>
-
-                <MenuItem @click="resetTwoFactor(row)">
-                  <Button
-                    size="small"
-                    type="link"
-                    v-access:code="'AbpIdentity.Users.ResetTwoFactor'"
-                  >
-                    {{ $t('abp.user.resetTwoFactor') }}
-                  </Button>
-                </MenuItem>
-              </Menu>
-            </template>
-          </Dropdown>
-        </Space>
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              size: 'small',
+              auth: ['AbpIdentity.Users.Update'],
+              onClick: onEdit.bind(null, row),
+            },
+          ]"
+          :drop-down-actions="[
+            {
+              label: row.isActive
+                ? $t('common.disabled')
+                : $t('common.enabled'),
+              icon: 'ant-design:lock-outlined',
+              type: 'link',
+              size: 'small',
+              auth: ['AbpIdentity.Users.Enable'],
+              onClick: onLock.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              icon: 'ant-design:delete-outlined',
+              type: 'primary',
+              auth: ['AbpIdentity.Users.Delete'],
+              popConfirm: {
+                title: $t('common.askConfirmDelete'),
+                confirm: onDel.bind(null, row),
+              },
+            },
+            {
+              label: $t('abp.user.resetTwoFactor'),
+              icon: 'ant-design:usergroup-add-outlined',
+              auth: ['AbpIdentity.Users.ResetTwoFactor'],
+              onClick: resetTwoFactor.bind(null, row),
+            },
+          ]"
+        />
       </template>
     </Grid>
 

@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import { useVbenModal } from '@vben/common-ui';
+import { ref } from 'vue';
+
+import { useVbenModal, z } from '@vben/common-ui';
 
 import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { postTemplatesCopy } from '#/api-client/index';
 import { $t } from '#/locales';
-import { z } from '@vben/common-ui';
-import { ref } from 'vue';
 
 const emit = defineEmits(['reload']);
 const [Form, formApi] = useVbenForm({
@@ -19,25 +19,25 @@ const [Form, formApi] = useVbenForm({
   showDefaultActions: false,
   layout: 'horizontal',
   schema: [
-  {
-    fieldName: 'name',
-    label: $t('abp.code.templateName'),
-    component: 'Input',
-    componentProps: {},
-    rules: z.string().min(1, {
-      message: $t('common.pleaseInput') + $t('abp.code.templateName'),
-    }),
-  },
-  {
-    fieldName: 'remark',
-    label: $t('abp.code.remark'),
-    component: 'Input',
-    componentProps: {},
-    rules: z.string().min(1, {
-      message: $t('common.pleaseInput') + $t('abp.code.remark'),
-    }),
-  },
-],
+    {
+      fieldName: 'name',
+      label: $t('code.templateName'),
+      component: 'Input',
+      componentProps: {},
+      rules: z.string().min(1, {
+        message: $t('common.pleaseInput') + $t('code.templateName'),
+      }),
+    },
+    {
+      fieldName: 'remark',
+      label: $t('code.remark'),
+      component: 'Input',
+      componentProps: {},
+      rules: z.string().min(1, {
+        message: $t('common.pleaseInput') + $t('code.remark'),
+      }),
+    },
+  ],
   wrapperClass: 'grid-cols-1',
 });
 
@@ -57,7 +57,7 @@ const [Modal, modalApi] = useVbenModal({
     try {
       modalApi.setState({ loading: true, confirmLoading: true });
       const values = await formApi.getValues();
-      await postTemplatesCopy ({ body: { ...values, id: data.value.id } });
+      await postTemplatesCopy({ body: { ...values, id: data.value.id } });
       message.success($t('common.copySuccess'));
       emit('reload');
       modalApi.close();
@@ -68,7 +68,7 @@ const [Modal, modalApi] = useVbenModal({
 });
 </script>
 <template>
-  <Modal :title="'复制模板组'">
+  <Modal title="复制模板组">
     <Form />
   </Modal>
 </template>
