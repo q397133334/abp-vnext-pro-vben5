@@ -6,7 +6,7 @@ import { ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { message as Message, Modal } from 'ant-design-vue';
+import { message as Message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
@@ -141,16 +141,10 @@ async function onEdit(record: any) {
   editFormApi.setValues({ ...record });
 }
 
-function onDel(row: any) {
-  const message = `${$t('common.confirmDelete') + row.name}?`;
-  Modal.confirm({
-    title: message,
-    onOk: async () => {
-      await postTenantsDelete({ body: { id: row.id } });
-      gridApi.reload();
-      Message.success($t('common.deleteSuccess'));
-    },
-  });
+async function onDel(row: any) {
+  await postTenantsDelete({ body: { id: row.id } });
+  gridApi.reload();
+  Message.success($t('common.deleteSuccess'));
 }
 const openAddModal = async () => {
   editRow.value = {};
