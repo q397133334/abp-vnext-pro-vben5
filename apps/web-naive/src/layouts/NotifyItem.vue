@@ -15,10 +15,10 @@ import {
 
 import { message as Message } from '#/adapter/naive';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import {
-  postNotificationNotificationPage,
-  postNotificationRead,
-} from '#/api-client';
+// import {
+//   postNotificationNotificationPage,
+//   postNotificationRead,
+// } from '#/api-client';
 import { $t } from '#/locales';
 
 defineOptions({
@@ -147,15 +147,15 @@ const gridOptions: VxeGridProps<any> = {
   proxyConfig: {
     ajax: {
       query: async ({ page }, formValues) => {
-        const { data } = await postNotificationNotificationPage({
-          body: {
-            pageIndex: page.currentPage,
-            pageSize: page.pageSize,
-            receiverUserId: userStore.userInfo?.userId,
-            ...formValues,
-          },
-        });
-        return data;
+        // const { data } = await postNotificationNotificationPage({
+        //   body: {
+        //     pageIndex: page.currentPage,
+        //     pageSize: page.pageSize,
+        //     receiverUserId: userStore.userInfo?.userId,
+        //     ...formValues,
+        //   },
+        // });
+        return null;
       },
     },
   },
@@ -171,7 +171,7 @@ const onRead = (row: any) => {
   Modal.confirm({
     title: $t('abp.message.confirmRead'),
     onOk: async () => {
-      await postNotificationRead({ body: { id: row.id } });
+      // await postNotificationRead({ body: { id: row.id } });
       gridApi.reload();
       Message.success($t('common.success'));
     },

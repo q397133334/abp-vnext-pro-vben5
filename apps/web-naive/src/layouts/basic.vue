@@ -25,12 +25,12 @@ import dayjs from 'dayjs';
 
 import { useVbenForm } from '#/adapter/form';
 import { message as Message } from '#/adapter/naive';
-import {
-  postNotificationBatchRead,
-  postNotificationNotificationPage,
-  postNotificationRead,
-  postUsersChangePassword,
-} from '#/api-client';
+// import {
+//   postNotificationBatchRead,
+//   postNotificationNotificationPage,
+//   postNotificationRead,
+//   postUsersChangePassword,
+// } from '#/api-client';
 import { useSignalR } from '#/hooks/useSignalR';
 import { $t } from '#/locales';
 import { useAuthStore } from '#/store';
@@ -189,7 +189,7 @@ async function handleMakeAll() {
     .map((item) => item.id);
 
   if (readIds.length > 0) {
-    await postNotificationBatchRead({ body: { ids: readIds } });
+    // await postNotificationBatchRead({ body: { ids: readIds } });
     Message.success($t('common.editSuccess'));
   }
 
@@ -200,7 +200,7 @@ async function handleRead(row: NotificationItem) {
   if (row.isRead) {
     return;
   }
-  await postNotificationRead({ body: { id: row.id } });
+  // await postNotificationRead({ body: { id: row.id } });
 
   notifications.value.forEach((item) => {
     if (item.id === row.id) {
@@ -225,7 +225,7 @@ async function submit() {
     Message.warn($t('abp.user.newPasswordAndConfirmPasswordNotMatch'));
     return;
   }
-  await postUsersChangePassword({ body: formValues });
+  // await postUsersChangePassword({ body: formValues });
   Message.success($t('common.editSuccess'));
   await resetPasswordApi.resetForm();
   resetPasswordModalApi.close();
@@ -247,25 +247,25 @@ watch(
 );
 
 async function loadMessage() {
-  notifications.value = [];
-  const message = await postNotificationNotificationPage({
-    body: {
-      pageIndex: 1,
-      pageSize: 4,
-      messageType: 20,
-      receiverUserId: userStore.userInfo?.userId,
-    },
-  });
-  message.data?.items?.forEach((item) => {
-    notifications.value.push(convertToNotificationItem(item));
-    // 按照isRead属性进行排序
-    notifications.value.sort((a, b) => {
-      if (a.isRead === b.isRead) {
-        return 0;
-      }
-      return a.isRead ? 1 : -1;
-    });
-  });
+  // notifications.value = [];
+  // const message = await postNotificationNotificationPage({
+  //   body: {
+  //     pageIndex: 1,
+  //     pageSize: 4,
+  //     messageType: 20,
+  //     receiverUserId: userStore.userInfo?.userId,
+  //   },
+  // });
+  // message.data?.items?.forEach((item) => {
+  //   notifications.value.push(convertToNotificationItem(item));
+  //   // 按照isRead属性进行排序
+  //   notifications.value.sort((a, b) => {
+  //     if (a.isRead === b.isRead) {
+  //       return 0;
+  //     }
+  //     return a.isRead ? 1 : -1;
+  //   });
+  // });
 }
 </script>
 

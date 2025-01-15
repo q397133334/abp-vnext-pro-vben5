@@ -1,4 +1,4 @@
-import { useUserStore } from '@vben/stores';
+import { useAccessStore, useUserStore } from '@vben/stores';
 
 import { message as Message } from '#/adapter/naive';
 import { $t } from '#/locales';
@@ -20,6 +20,7 @@ client.instance.interceptors.request.use((request) => {
   // 全局拦截请求发送前提交的参数
   const userStore = useUserStore();
   const token = userStore.userInfo?.token;
+  const authStore = useAccessStore();
   // 设置请求头
   if (request.headers) {
     request.headers.__tenant = userStore.tenant?.tenantId;
@@ -45,7 +46,7 @@ client.instance.interceptors.request.use((request) => {
 
   // 设置请求头
   if (request.headers) {
-    request.headers.Authorization = `Bearer ${token}`;
+    request.headers.Authorization = `Bearer ${authStore.accessToken}`;
   }
 
   return request;

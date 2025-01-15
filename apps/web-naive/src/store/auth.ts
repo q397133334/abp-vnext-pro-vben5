@@ -8,14 +8,13 @@ import { resetAllStores, useAccessStore, useUserStore } from '@vben/stores';
 
 import { defineStore } from 'pinia';
 
-import { message, notification } from '#/adapter/naive';
+import { notification } from '#/adapter/naive';
 import { getUserInfoApi, logoutApi } from '#/api';
 import { loginApi } from '#/api/core/auth';
 import {
   type ApplicationAuthConfigurationDto,
   type ApplicationConfigurationDto,
   getApiAbpApplicationConfiguration,
-  postTenantsFind,
 } from '#/api-client';
 import { $t } from '#/locales';
 
@@ -39,20 +38,20 @@ export const useAuthStore = defineStore('auth', () => {
     let userInfo: null | UserInfo = null;
     try {
       //  判断是否租户登录
-      if (params.tenant) {
-        const tenantResult = await postTenantsFind({
-          body: {
-            name: params.tenant,
-          },
-        });
-        if (tenantResult.data?.success) {
-          userStore.setTenantInfo(tenantResult.data as any);
-        } else {
-          userStore.setTenantInfo(null);
-          message.error(`${params.tenant}$t('abp.tenant.notExist')`);
-          return;
-        }
-      }
+      // if (params.tenant) {
+      //   const tenantResult = await postTenantsFind({
+      //     body: {
+      //       name: params.tenant,
+      //     },
+      //   });
+      //   if (tenantResult.data?.success) {
+      //     userStore.setTenantInfo(tenantResult.data as any);
+      //   } else {
+      //     userStore.setTenantInfo(null);
+      //     message.error(`${params.tenant}$t('abp.tenant.notExist')`);
+      //     return;
+      //   }
+      // }
 
       loginLoading.value = true;
       const data = await loginApi({
