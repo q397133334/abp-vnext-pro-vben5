@@ -62,6 +62,10 @@ export const useAuthStore = defineStore('auth', () => {
         accessStore.setAccessToken(data.access_token);
         userInfo = data as any;
         userStore.setUserInfo(userInfo as any);
+        const applicationConfiguration =
+          await getApiAbpApplicationConfiguration({
+            query: { IncludeLocalizationResources: false },
+          });
         const { data: authData } = await getApiAbpApplicationConfiguration({
           query: { IncludeLocalizationResources: false },
         });

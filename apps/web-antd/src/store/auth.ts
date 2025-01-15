@@ -13,7 +13,7 @@ import {
   type ApplicationAuthConfigurationDto,
   type ApplicationConfigurationDto,
   getApiAbpApplicationConfiguration,
-  postApiAppAccountLogin,
+  postApiAppAccountLogin2Fa,
   postTenantsFind,
 } from '#/api-client';
 import { useSignalR } from '#/hooks/useSignalR';
@@ -58,7 +58,7 @@ export const useAuthStore = defineStore('auth', () => {
         }
       }
 
-      const { data = {} } = await postApiAppAccountLogin({
+      const { data = {} } = await postApiAppAccountLogin2Fa({
         body: {
           ...params,
         },

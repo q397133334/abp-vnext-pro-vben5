@@ -6,10 +6,11 @@ import { useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { Button, Modal, Space } from 'ant-design-vue';
+import { Modal } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { postTemplatesDelete, postTemplatesPage } from '#/api-client/index';
+import { TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 // 新增modal
 import AddModal from './AddModal.vue';
@@ -121,35 +122,73 @@ const handleViewDetail = (row: Record<string, any>) => {
   <Page auto-content-height>
     <Grid>
       <template #toolbar-actions>
-        <Space>
-          <Button
-            type="primary"
-            v-access:code="'AbpCode.CodeManagement.Template.Create'"
-            @click="handleAdd"
-          >
-            {{ $t('common.add') }}
-          </Button>
-        </Space>
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.add'),
+              type: 'primary',
+              icon: 'ant-design:plus-outlined',
+              onClick: handleAdd.bind(null),
+              auth: ['AbpCodeManagement.Template.Create'],
+            },
+          ]"
+        />
       </template>
 
       <template #action="{ row }">
-        <Button
+        <TableAction
+          :actions="[
+            {
+              label: $t('code.detail'),
+              type: 'link',
+              size: 'small',
+              auth: ['AbpCodeManagement.Template.Update'],
+              onClick: handleViewDetail.bind(null, row),
+            },
+            {
+              label: $t('code.copy'),
+              type: 'link',
+              size: 'small',
+              auth: ['AbpCodeManagement.Template.Copy'],
+              onClick: handleCopy.bind(null, row),
+            },
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              size: 'small',
+              auth: ['AbpCodeManagement.Template.Copy'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              size: 'small',
+              auth: ['AbpCodeManagement.Template.Delete'],
+              popConfirm: {
+                title: $t('common.askConfirmDelete'),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
+
+        <!-- <Button
           type="link"
-          v-access:code="'AbpCode.CodeManagement.Template.Update'"
+          v-access:code="'AbpCodeManagement.Template.Update'"
           @click="handleViewDetail(row)"
         >
-          {{ $t('abp.code.detail') }}
+          {{ $t('code.detail') }}
         </Button>
         <Button
           type="link"
-          v-access:code="'AbpCode.CodeManagement.Template.Copy'"
+          v-access:code="'AbpCodeManagement.Template.Copy'"
           @click="handleCopy(row)"
         >
-          {{ $t('abp.code.copy') }}
+          {{ $t('code.copy') }}
         </Button>
         <Button
           type="link"
-          v-access:code="'AbpCode.CodeManagement.Template.Update'"
+          v-access:code="'AbpCodeManagement.Template.Update'"
           @click="handleEdit(row)"
         >
           {{ $t('common.edit') }}
@@ -157,11 +196,11 @@ const handleViewDetail = (row: Record<string, any>) => {
         <Button
           danger
           type="link"
-          v-access:code="'AbpCode.CodeManagement.Template.Delete'"
+          v-access:code="'AbpCodeManagement.Template.Delete'"
           @click="handleDelete(row)"
         >
           {{ $t('common.delete') }}
-        </Button>
+        </Button> -->
       </template>
     </Grid>
     <AddVbenModal @reload="gridApi.reload" />

@@ -2301,7 +2301,7 @@ export const UpdateEmailSettingsDtoSchema = {
       nullable: true,
     },
     smtpPort: {
-      maximum: 65_535,
+      maximum: 65535,
       minimum: 1,
       type: 'integer',
       format: 'int32',

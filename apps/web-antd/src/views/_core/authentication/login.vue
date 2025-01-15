@@ -1,10 +1,9 @@
 <script lang="ts" setup>
 import type { VbenFormSchema } from '@vben/common-ui';
-import type { BasicOption } from '@vben/types';
 
-import { computed, markRaw } from 'vue';
+import { computed } from 'vue';
 
-import { AuthenticationLogin, SliderCaptcha, z } from '@vben/common-ui';
+import { AuthenticationLogin, z } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
 import { useAuthStore } from '#/store';
@@ -12,21 +11,6 @@ import { useAuthStore } from '#/store';
 defineOptions({ name: 'Login' });
 
 const authStore = useAuthStore();
-
-const MOCK_USER_OPTIONS: BasicOption[] = [
-  {
-    label: 'Super',
-    value: 'vben',
-  },
-  {
-    label: 'Admin',
-    value: 'admin',
-  },
-  {
-    label: 'User',
-    value: 'jack',
-  },
-];
 
 const formSchema = computed((): VbenFormSchema[] => {
   return [
@@ -36,7 +20,7 @@ const formSchema = computed((): VbenFormSchema[] => {
         placeholder: $t('abp.login.selectTenant'),
       },
       fieldName: 'tenant',
-      label: '租户',
+      label: $t('abp.tenant.tenant'),
     },
     {
       component: 'VbenInput',
@@ -77,6 +61,14 @@ const formSchema = computed((): VbenFormSchema[] => {
         .string()
         .min(1, { message: $t('authentication.passwordTip') })
         .default('1q2w3E*'),
+    },
+    {
+      component: 'VbenInput',
+      componentProps: {
+        placeholder: $t('abp.login.inputCode'),
+      },
+      fieldName: 'code',
+      label: $t('abp.user.code'),
     },
     // {
     //   component: markRaw(SliderCaptcha),

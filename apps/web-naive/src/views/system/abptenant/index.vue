@@ -6,10 +6,8 @@ import { ref } from 'vue';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { NButton as Button, NSpace as Space } from 'naive-ui';
-
 import { useVbenForm } from '#/adapter/form';
-import { message as Message, modal as Modal } from '#/adapter/naive';
+import { message as Message } from '#/adapter/naive';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import {
   postTenantsCreate,
@@ -17,6 +15,7 @@ import {
   postTenantsPage,
   postTenantsUpdate,
 } from '#/api-client';
+import { TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 
 import ConnectionString from './ConnectionStringModal.vue';
@@ -141,16 +140,10 @@ async function onEdit(record: any) {
   editFormApi.setValues({ ...record });
 }
 
-function onDel(row: any) {
-  const message = `${$t('common.confirmDelete') + row.name}?`;
-  Modal.confirm({
-    title: message,
-    onOk: async () => {
-      await postTenantsDelete({ body: { id: row.id } });
-      gridApi.reload();
-      Message.success($t('common.deleteSuccess'));
-    },
-  });
+async function onDel(row: any) {
+  await postTenantsDelete({ body: { id: row.id } });
+  gridApi.reload();
+  Message.success($t('common.deleteSuccess'));
 }
 const openAddModal = async () => {
   editRow.value = {};
@@ -186,54 +179,54 @@ const openConnectionStringModal = (row: any) => {
   <Page auto-content-height>
     <Grid>
       <template #toolbar-actions>
-        <Space>
-          <Button
-            type="primary"
-            v-access:code="'AbpTenantManagement.Tenants.Create'"
-            @click="openAddModal"
-          >
-            {{ $t('common.add') }}
-          </Button>
-        </Space>
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.add'),
+              type: 'primary',
+              icon: 'ant-design:plus-outlined',
+              onClick: openAddModal.bind(null),
+              auth: ['AbpTenantManagement.Tenants.Create'],
+            },
+          ]"
+        />
       </template>
       <template #action="{ row }">
-        <Space>
-          <Button
-            size="small"
-            type="primary"
-            v-access:code="'AbpTenantManagement.Tenants.Update'"
-            @click="onEdit(row)"
-          >
-            {{ $t('common.edit') }}
-          </Button>
-          <Button
-            size="small"
-            type="primary"
-            v-access:code="
-              'AbpTenantManagement.Tenants.ManageConnectionStrings'
-            "
-            @click="openConnectionStringModal(row)"
-          >
-            {{ $t('abp.tenant.mangeConnectionString') }}
-          </Button>
-          <Button
-            size="small"
-            type="primary"
-            v-access:code="'AbpTenantManagement.Tenants.ManageFeatures'"
-            @click="openFeatureManage(row)"
-          >
-            {{ $t('abp.tenant.featureManagement') }}
-          </Button>
-          <Button
-            danger
-            size="small"
-            type="primary"
-            v-access:code="'AbpTenantManagement.Tenants.Delete'"
-            @click="onDel(row)"
-          >
-            {{ $t('common.delete') }}
-          </Button>
-        </Space>
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.edit'),
+              text: true,
+              size: 'small',
+              auth: ['AbpTenantManagement.Tenants.Update'],
+              onClick: onEdit.bind(null, row),
+            },
+            {
+              label: $t('abp.tenant.mangeConnectionString'),
+              text: true,
+              size: 'small',
+              auth: ['AbpTenantManagement.Tenants.ManageConnectionStrings'],
+              onClick: openConnectionStringModal.bind(null, row),
+            },
+            {
+              label: $t('abp.tenant.featureManagement'),
+              text: true,
+              size: 'small',
+              auth: ['AbpTenantManagement.Tenants.ManageFeatures'],
+              onClick: openFeatureManage.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              text: true,
+              size: 'small',
+              auth: ['AbpTenantManagement.Tenants.Delete'],
+              popConfirm: {
+                title: $t('common.askConfirmDelete'),
+                confirm: onDel.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
 

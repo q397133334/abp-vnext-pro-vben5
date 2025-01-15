@@ -7,9 +7,6 @@ import { useVbenModal } from '@vben/common-ui';
 import {
   Button,
   Col,
-  Dropdown,
-  Menu,
-  MenuItem,
   message,
   Modal,
   Row,
@@ -25,6 +22,7 @@ import {
   postDataDictionaryPageDetail,
   postDataDictionaryStatus,
 } from '#/api-client/index';
+import { TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 
 import DataDictionaryDetail from './DataDictionaryDetailModal.vue';
@@ -298,34 +296,22 @@ const removeDetailRow = async (row: Record<string, any>) => {
           </template>
 
           <template #action="{ row }">
-            <Space>
-              <Dropdown>
-                <Button size="small">......</Button>
-                <template #overlay>
-                  <Menu>
-                    <MenuItem @click="">
-                      <Button
-                        size="small"
-                        type="link"
-                        @click="editDataDictionary(row)"
-                      >
-                        {{ $t('common.edit') }}
-                      </Button>
-                    </MenuItem>
-                    <MenuItem @click="">
-                      <Button
-                        danger
-                        size="small"
-                        type="link"
-                        @click="deleteDataDictionary(row)"
-                      >
-                        {{ $t('common.delete') }}
-                      </Button>
-                    </MenuItem>
-                  </Menu>
-                </template>
-              </Dropdown>
-            </Space>
+            <TableAction
+              :actions="[
+                {
+                  label: $t('common.edit'),
+                  type: 'link',
+                  size: 'small',
+                  onClick: editDataDictionary.bind(null, row),
+                },
+                {
+                  label: $t('common.delete'),
+                  type: 'link',
+                  size: 'small',
+                  onClick: deleteDataDictionary.bind(null, row),
+                },
+              ]"
+            />
           </template>
         </Grid>
       </Col>
@@ -353,7 +339,7 @@ const removeDetailRow = async (row: Record<string, any>) => {
               <Button type="link" @click="editDetailRow(row)">
                 {{ $t('common.edit') }}
               </Button>
-              <Button type="link" danger @click="removeDetailRow(row)">
+              <Button danger type="link" @click="removeDetailRow(row)">
                 {{ $t('common.delete') }}
               </Button>
             </Space>

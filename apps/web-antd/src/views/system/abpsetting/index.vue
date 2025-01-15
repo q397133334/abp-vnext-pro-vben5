@@ -92,7 +92,7 @@ const save = async (settingValue: Record<string, any>) => {
               :model="paneItem.settingItemOutput"
               style="max-width: 600px"
             >
-              <Row>
+              <Row style="margin-top: 10px">
                 <Col :span="24">
                   <Form.Item
                     v-for="formItem in paneItem.settingItemOutput"

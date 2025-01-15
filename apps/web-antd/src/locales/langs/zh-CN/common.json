@@ -18,6 +18,7 @@
   "yes": "是",
   "no": "否",
   "confirmDelete": "确认删除",
+  "askConfirmDelete": "确认删除吗?",
   "warning": "警告",
   "info": "正常",
   "error": "错误",
@@ -32,5 +33,7 @@
   "timeOut": "请求超时！",
   "expandAll": "展开全部",
   "collapseAll": "折叠全部",
-  "description": "描述"
+  "description": "描述",
+  "comfirm": "确认",
+  "valid": "验证"
 }

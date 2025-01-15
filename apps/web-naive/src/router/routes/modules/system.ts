@@ -18,7 +18,7 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'abpUser',
         path: 'user',
-        component: () => import('#/views/system/abpUser/index.vue'),
+        component: () => import('#/views/system/abpuser/index.vue'),
         meta: {
           // affixTab: true,
           icon: 'ph:user',

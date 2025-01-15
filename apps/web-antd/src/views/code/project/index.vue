@@ -7,10 +7,11 @@ import { useRouter } from 'vue-router';
 
 import { Page, useVbenModal } from '@vben/common-ui';
 
-import { Button, Modal, Space, Tag } from 'ant-design-vue';
+import { Modal, Tag } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { postProjectsDelete, postProjectsPage } from '#/api-client/index';
+import { TableAction } from '#/components/table-action';
 import { $t } from '#/locales';
 
 // 新增modal
@@ -111,15 +112,17 @@ const handleViewModel = (row: Record<string, any>) => {
   <Page auto-content-height>
     <Grid>
       <template #toolbar-actions>
-        <Space>
-          <Button
-            type="primary"
-            v-access:code="'AbpCode.CodeManagement.Project.Create'"
-            @click="handleAdd"
-          >
-            {{ $t('common.add') }}
-          </Button>
-        </Space>
+        <TableAction
+          :actions="[
+            {
+              label: $t('common.add'),
+              type: 'primary',
+              icon: 'ant-design:plus-outlined',
+              onClick: handleAdd.bind(null),
+              auth: ['AbpCodeManagement.Project.Create'],
+            },
+          ]"
+        />
       </template>
       <template #supportTenant="{ row }">
         <component
@@ -133,28 +136,34 @@ const handleViewModel = (row: Record<string, any>) => {
         />
       </template>
       <template #action="{ row }">
-        <Button
-          type="link"
-          v-access:code="'AbpCode.CodeManagement.Project.Model'"
-          @click="handleViewModel(row)"
-        >
-          {{ $t('code.model') }}
-        </Button>
-        <Button
-          type="link"
-          v-access:code="'AbpCode.CodeManagement.Project.Update'"
-          @click="handleEdit(row)"
-        >
-          {{ $t('common.edit') }}
-        </Button>
-        <Button
-          danger
-          type="link"
-          v-access:code="'AbpCode.CodeManagement.Project.Delete'"
-          @click="handleDelete(row)"
-        >
-          {{ $t('common.delete') }}
-        </Button>
+        <TableAction
+          :actions="[
+            {
+              label: $t('code.model'),
+              type: 'link',
+              size: 'small',
+              auth: ['AbpCodeManagement.Project.Model'],
+              onClick: handleViewModel.bind(null, row),
+            },
+            {
+              label: $t('common.edit'),
+              type: 'link',
+              size: 'small',
+              auth: ['AbpCodeManagement.Project.Update'],
+              onClick: handleEdit.bind(null, row),
+            },
+            {
+              label: $t('common.delete'),
+              type: 'link',
+              size: 'small',
+              auth: ['AbpCodeManagement.Project.Delete'],
+              popConfirm: {
+                title: $t('common.askConfirmDelete'),
+                confirm: handleDelete.bind(null, row),
+              },
+            },
+          ]"
+        />
       </template>
     </Grid>
     <AddVbenModal @reload="gridApi.reload" />

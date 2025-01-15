@@ -4,14 +4,9 @@ import type { NotificationItem } from '@vben/layouts';
 import { computed, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
-import {
-  AuthenticationLoginExpiredModal,
-  useVbenModal,
-  z,
-} from '@vben/common-ui';
+import { AuthenticationLoginExpiredModal, useVbenModal } from '@vben/common-ui';
 import { LOGIN_PATH } from '@vben/constants';
 import { useWatermark } from '@vben/hooks';
-import { CircleHelp } from '@vben/icons';
 import {
   BasicLayout,
   LockScreen,
@@ -24,18 +19,17 @@ import { useAccessStore, useUserStore } from '@vben/stores';
 import { message as Message } from 'ant-design-vue/es/components';
 import dayjs from 'dayjs';
 
-import { useVbenForm } from '#/adapter/form';
 import {
   postNotificationBatchRead,
   postNotificationNotificationPage,
   postNotificationRead,
-  postUsersChangePassword,
 } from '#/api-client';
 import { useSignalR } from '#/hooks/useSignalR';
 import { $t } from '#/locales';
 import { useAuthStore } from '#/store';
 import LoginForm from '#/views/_core/authentication/login.vue';
 
+import MyProfile from './my-profile.vue';
 import NotifyItem from './NotifyItem.vue';
 
 const notifications = ref<NotificationItem[]>([]);
@@ -72,9 +66,9 @@ const { destroyWatermark, updateWatermark } = useWatermark();
 const showDot = computed(() =>
   notifications.value.some((item) => !item.isRead),
 );
-const [ResetPasswordModal, resetPasswordModalApi] = useVbenModal({
+const [MyProfileModal, myProfileModalApi] = useVbenModal({
   draggable: true,
-  onConfirm: submit,
+  onConfirm: () => {},
   onBeforeClose: () => {},
 });
 const [NotifyItemModal, notifyItemModalApi] = useVbenModal({
@@ -85,10 +79,10 @@ const [NotifyItemModal, notifyItemModalApi] = useVbenModal({
 const menus = computed(() => [
   {
     handler: () => {
-      resetPasswordModalApi.open();
+      myProfileModalApi.open();
     },
-    icon: CircleHelp,
-    text: $t('abp.user.changePassword'),
+    icon: 'ph:user',
+    text: $t('abp.user.myAccount'),
   },
   // {
   //   handler: () => {
@@ -118,58 +112,7 @@ const menus = computed(() => [
   //   text: $t('ui.widgets.qa'),
   // },
 ]);
-const [ResetPasswordForm, resetPasswordApi] = useVbenForm({
-  // 默认展开
-  collapsed: false,
-  // 所有表单项共用，可单独在表单内覆盖
-  commonConfig: {
-    // 所有表单项
-    componentProps: {
-      class: 'w-4/5',
-    },
-  },
-  // 提交函数
-  handleSubmit: () => {},
-  layout: 'horizontal',
-  schema: [
-    {
-      component: 'VbenInputPassword',
-      componentProps: {
-        placeholder: $t('common.pleaseInput') + $t('abp.user.currentPassword'),
-      },
-      fieldName: 'currentPassword',
-      label: $t('abp.user.currentPassword'),
-      rules: z.string().min(1, {
-        message: $t('common.pleaseInput') + $t('abp.user.currentPassword'),
-      }),
-    },
-    {
-      component: 'VbenInputPassword',
-      componentProps: {
-        placeholder: $t('common.pleaseInput') + $t('abp.user.newPassword'),
-      },
-      fieldName: 'newPassword',
-      label: $t('abp.user.newPassword'),
-      rules: z.string().min(1, {
-        message: $t('common.pleaseInput') + $t('abp.user.newPassword'),
-      }),
-    },
-    {
-      component: 'VbenInputPassword',
-      componentProps: {
-        placeholder: $t('common.pleaseInput') + $t('abp.user.comfirmPassword'),
-      },
-      fieldName: 'confirmPassword',
-      label: $t('abp.user.comfirmPassword'),
-      rules: z.string().min(1, {
-        message: $t('common.pleaseInput') + $t('abp.user.comfirmPassword'),
-      }),
-    },
-  ],
-  showCollapseButton: false,
-  showDefaultActions: false,
-  wrapperClass: 'grid-cols-1',
-});
+
 const avatar = computed(() => {
   return userStore.userInfo?.avatar ?? preferences.app.defaultAvatar;
 });
@@ -211,25 +154,7 @@ async function handleRead(row: NotificationItem) {
 function handleViewAll() {
   notifyItemModalApi.open();
 }
-async function submit() {
-  // 表单校验
-  const { valid } = await resetPasswordApi.validate();
-  if (!valid) return;
-  const formValues = await resetPasswordApi.getValues();
 
-  if (formValues.currentPassword === formValues.confirmPassword) {
-    Message.warn($t('abp.user.newPasswordAndCurrentPasswordNotAlike'));
-    return;
-  }
-  if (formValues.newPassword !== formValues.confirmPassword) {
-    Message.warn($t('abp.user.newPasswordAndConfirmPasswordNotMatch'));
-    return;
-  }
-  await postUsersChangePassword({ body: formValues });
-  Message.success($t('common.editSuccess'));
-  await resetPasswordApi.resetForm();
-  resetPasswordModalApi.close();
-}
 watch(
   () => preferences.app.watermark,
   async (enable) => {
@@ -303,9 +228,14 @@ async function loadMessage() {
       <LockScreen :avatar @to-login="handleLogout" />
     </template>
   </BasicLayout>
-  <ResetPasswordModal :title="$t('abp.user.changePassword')" class="w-[600px]">
-    <ResetPasswordForm />
-  </ResetPasswordModal>
+  <MyProfileModal
+    :show-cancel-button="false"
+    :show-confirm-button="false"
+    :title="$t('abp.user.myAccount')"
+    class="h-[410px] w-[800px]"
+  >
+    <MyProfile />
+  </MyProfileModal>
 
   <NotifyItemModal
     :fullscreen="true"

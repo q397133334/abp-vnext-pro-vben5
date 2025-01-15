@@ -94,7 +94,7 @@ const save = async (item: any) => {
               :model="paneItem"
               style="max-width: 800px"
             >
-              <Row>
+              <Row style="margin-top: 10px">
                 <Col :span="24">
                   <Form.Item
                     v-for="formItem in paneItem.features"

@@ -1,6 +1,7 @@
 {
   "login": {
-    "selectTenant": "请选择租户,非租户模式请忽略"
+    "selectTenant": "请选择租户,非租户模式请忽略",
+    "inputCode": "请输入双因素验证码,如果账户没有开启双因素验证请忽略"
   },
   "menu": {
     "system": "系统管理",
@@ -29,7 +30,8 @@
   "user": {
     "user": "用户",
     "userName": "用户名",
-    "name": "姓名",
+    "name": "名称",
+    "surname": "姓氏",
     "email": "邮箱",
     "phone": "手机号",
     "password": "密码",
@@ -41,7 +43,17 @@
     "comfirmPassword": "确认密码",
     "comfirmDeleteUser": "确认删除用户",
     "newPasswordAndConfirmPasswordNotMatch": "新密码与确认密码不匹配",
-    "newPasswordAndCurrentPasswordNotAlike": "新旧密码不能一样"
+    "newPasswordAndCurrentPasswordNotAlike": "新旧密码不能一样",
+    "myProfile": "个人信息",
+    "myAccount": "我的账户",
+    "twoFactor": "双因素验证",
+    "verifyAuthenticator": "验证身份验证器",
+    "twoFactorDesc": "您的双因素身份验证应用程序将生成一个代码，请输入该代码并确认.",
+    "code": "双因素验证码",
+    "twoFactorEnabled": "您的账户已经成功开启双因素验证,登录时要求输入应用程序生成的代码.",
+    "twoFactorDisabled": "您的账户已经关闭双因素验证,登录时不在要求输入应用程序生成的代码.",
+    "twoFactorEnabledDesc": "您的账户已经开启双因素验证,如果需要关闭,请输入双因素验证码,然后在禁用.如果忘记验证码,请联系管理员.",
+    "resetTwoFactor": "重置双因素验证"
   },
   "role": {
     "role": "角色",
@@ -105,6 +117,7 @@
     "selectNode": "请先选择一个节点再进行操作"
   },
   "tenant": {
+    "tenant": "租户",
     "notExist": "租户不存在",
     "name": "租户名称",
     "adminEmail": "管理员邮箱",

@@ -23,6 +23,12 @@ export const tableSchema: any = [
     minWidth: '150',
     slots: { default: 'isActive' },
   },
+  {
+    field: 'twoFactorEnabled',
+    title: $t('abp.user.twoFactor'),
+    minWidth: '150',
+    slots: { default: 'twoFactorEnabled' },
+  },
   { field: 'phoneNumber', title: $t('abp.user.phone'), minWidth: '150' },
   {
     field: 'creationTime',

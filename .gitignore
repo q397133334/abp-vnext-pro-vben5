@@ -52,3 +52,4 @@ vite.config.ts.*
 /docs
 /playground
 /apps/backend-mock
+/playground

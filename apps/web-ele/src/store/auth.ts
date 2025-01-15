@@ -14,7 +14,7 @@ import {
   type ApplicationAuthConfigurationDto,
   type ApplicationConfigurationDto,
   getApiAbpApplicationConfiguration,
-  postApiAppAccountLogin,
+  postApiAppAccountLogin2Fa,
   postTenantsFind,
 } from '#/api-client';
 import { $t } from '#/locales';
@@ -55,7 +55,7 @@ export const useAuthStore = defineStore('auth', () => {
       }
 
       loginLoading.value = true;
-      const { data = {} } = await postApiAppAccountLogin({
+      const { data = {} } = await postApiAppAccountLogin2Fa({
         body: {
           ...params,
         },

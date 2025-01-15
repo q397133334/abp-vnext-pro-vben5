@@ -46,8 +46,8 @@ const codeText = ref();
 const route = useRoute();
 
 const contextMenuOptions = [
-  { label: $t('abp.code.addFolder'), key: 'addFolder' },
-  { label: $t('abp.code.addFile'), key: 'addfile' },
+  { label: $t('code.addFolder'), key: 'addFolder' },
+  { label: $t('code.addFile'), key: 'addfile' },
   { label: $t('common.edit'), key: 'edit' },
   { label: $t('common.delete'), key: 'delete' },
 ];
