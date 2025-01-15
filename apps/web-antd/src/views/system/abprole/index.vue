@@ -178,7 +178,10 @@ const [AuthDrawer, authDrawerApi] = useVbenDrawer({
 });
 
 // 自定义级联选中
-const handleCheck = (checkedKeys: { checked: any[]; }, e: { checked: boolean; node: {[x: string]: any }; }) => {
+const handleCheck = (
+  checkedKeys: { checked: any[] },
+  e: { checked: boolean; node: { [x: string]: any } },
+) => {
   if (e.checked === true) {
     // 新增权限时，向下级联选中
     const filteredKeys = authPolicy.value.filter((key: string) =>
@@ -187,10 +190,8 @@ const handleCheck = (checkedKeys: { checked: any[]; }, e: { checked: boolean; no
     checkedKeys.checked = defaultCheckedKeys.value.checked.concat(
       filteredKeys.filter((key: string) => !checkedKeys.checked.includes(key)),
     );
-    if (e.node?.parent?.key && !checkedKeys.checked.includes(e.node.parent.key)) {
-      checkedKeys.checked.push(e.node.parent.key)
-    }
-
+    // 递归添加父节点
+    addParentKeys(e.node, checkedKeys);
   } else {
     // 取消权限时，向下级联反选
     checkedKeys.checked = checkedKeys.checked.filter(
@@ -198,6 +199,14 @@ const handleCheck = (checkedKeys: { checked: any[]; }, e: { checked: boolean; no
     );
   }
 };
+
+// 递归添加父节点
+function addParentKeys(node, checkedKeys) {
+  if (node?.parent?.key) {
+    checkedKeys.checked.push(node.parent.key);
+    addParentKeys(node.parent, checkedKeys);
+  }
+}
 /*  */
 const updateAuth = async () => {
   try {
@@ -205,7 +214,6 @@ const updateAuth = async () => {
     const permissions = [] as any;
     // 处理选中的权限
     const checkedKeys = defaultCheckedKeys.value;
-    console.log('checkedKeys----传参', checkedKeys);
     checkedKeys.checked.forEach((item: string) => {
       if (item.includes('.')) {
         // 只处理实际权限节点
