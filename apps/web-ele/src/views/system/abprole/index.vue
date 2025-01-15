@@ -190,12 +190,19 @@ const [AuthDrawer, authDrawerApi] = useVbenDrawer({
   },
 });
 
-const onChange = (node: any, { checkedKeys = []}) => {
+const onChange = (node: any, { checkedKeys = [] }) => {
   defaultCheckedKeys.value = checkedKeys;
-}
+};
 
 const handleCheckChange = (node: any, isChecked: boolean) => {
-  console.log(node, isChecked);
+  // 获取节点实例
+  const currentNode = authTreeRef?.value?.getNode(node);
+  if (currentNode) {
+    // 获取父节点
+    const parentNode = currentNode.parent;
+    console.log('Parent Node:', parentNode);
+  }
+  addParentKeys(node, defaultCheckedKeys);
   if (isChecked && node.children && node.children.length > 0) {
     // 父节点选中，子节点全部选中
     const childKeys = node.children.map((item: any) => item.key);
@@ -207,15 +214,24 @@ const handleCheckChange = (node: any, isChecked: boolean) => {
       authTreeRef.value && authTreeRef.value.setChecked(key, isChecked, true);
     });
   }
-}
+};
 
+// 递归添加父节点
+function addParentKeys(node) {
+  const currentNode = authTreeRef?.value?.getNode(node);
+  if (currentNode?.parent?.key) {
+    defaultCheckedKeys.value.push(currentNode.parent.key);
+    addParentKeys(currentNode.parent);
+  }
+}
 const updateAuth = async () => {
   try {
     authDrawerApi.setState({ loading: true, confirmLoading: true });
     const permissions = [] as any;
 
     // 处理选中的权限 getCheckedKeys
-    const checkedKeys = authTreeRef.value && authTreeRef.value.getCheckedKeys() || [] as any;
+    const checkedKeys =
+      (authTreeRef.value && authTreeRef.value.getCheckedKeys()) || ([] as any);
     checkedKeys.forEach((item: string) => {
       if (item.includes('.')) {
         // 只处理实际权限节点
@@ -341,12 +357,12 @@ const updateAuth = async () => {
     <AuthDrawer :title="$t('abp.role.permissions')" class="w-[500px]">
       <Tree
         ref="authTreeRef"
-        node-key="key"
-        show-checkbox
         :check-strictly="true"
         :data="authTree"
         :default-checked-keys="defaultCheckedKeys"
         :props="{ label: 'title', children: 'children' }"
+        node-key="key"
+        show-checkbox
         @check="onChange"
         @check-change="handleCheckChange"
       />
